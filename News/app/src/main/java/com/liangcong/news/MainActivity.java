@@ -7,6 +7,9 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.liangcong.adapter.TabAdapter;
 import com.liangcong.recyclerview.RecyclerViewFragment;
@@ -21,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     public static TabAdapter adapter;
     private TabLayout tabLayout;
     public static ViewPager viewPager;
+
+
 
     private ProgressDialog progressDialog;
 
@@ -57,12 +62,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        /*Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);*/
-
     }
 
-    /*@Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
@@ -82,20 +84,8 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
 
         }
-    }*/
+    }
 
-
-    /*private String transfer(List<TencentNewsXmlParser.NewsItem> items){
-        StringBuilder htmlString = new StringBuilder();
-        for(TencentNewsXmlParser.NewsItem item: displayItems){
-            htmlString.append("<p> ");
-            htmlString.append(item.title);
-            htmlString.append(item.link);
-            htmlString.append(item.description);
-            htmlString.append("</p> ");
-        }
-        return htmlString.toString();
-    }*/
 
     public void showProgressDialog(Context mContext, String text) {
         if (progressDialog == null) {

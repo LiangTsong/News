@@ -32,4 +32,5 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return mFragmentList.size();
     }
+
 }
