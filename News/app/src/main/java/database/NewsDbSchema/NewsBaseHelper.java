@@ -20,7 +20,10 @@ public class NewsBaseHelper extends SQLiteOpenHelper {
                 NewsDbSchema.Newstable.Cols.TYPE + ", " +
                 NewsDbSchema.Newstable.Cols.PUBDATE + ", " +
                 NewsDbSchema.Newstable.Cols.DESCRIPTION + ", " +
-                NewsDbSchema.Newstable.Cols.LINK + " unique)");
+                NewsDbSchema.Newstable.Cols.LINK + " unique, " +
+                NewsDbSchema.Newstable.Cols.READ + " integer, " +
+                NewsDbSchema.Newstable.Cols.SAVED + " integer, " +
+                NewsDbSchema.Newstable.Cols.HTML + " )");
     }
 
     @Override

@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class DisplayNewsActivity extends AppCompatActivity {
+    private static final String APP_CACHE_DIRNAME = "/webcache";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +52,14 @@ public class DisplayNewsActivity extends AppCompatActivity {
         webView.getSettings().setDomStorageEnabled(true);
         // 开启database storage API功能
         webView.getSettings().setDatabaseEnabled(true);
-        // String cacheDirPath = getFilesDir().getAbsolutePath()
-        //         + APP_CACHE_DIRNAME
-       /* String cacheDirPath = ConfigUtil.getCacheDir();
-                + APP_CACHE_DIRNAME;
+        String cacheDirPath = getFilesDir().getAbsolutePath()
+                 + APP_CACHE_DIRNAME;
+        //String cacheDirPath = getCacheDir()
+        //        + APP_CACHE_DIRNAME;
         Log.i("CACHE", "cachePath=" + cacheDirPath);
         // 设置数据库缓存路径
         webView.getSettings().setDatabasePath(cacheDirPath);
-        webView.getSettings().setAppCachePath(cacheDirPath);*/
+        webView.getSettings().setAppCachePath(cacheDirPath);
         // 开启Application Cache功能
         webView.getSettings().setAppCacheEnabled(true);
 

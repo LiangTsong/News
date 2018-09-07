@@ -24,12 +24,16 @@ public class TencentNewsXmlParser {
         this.type = type;
     }
 
-    public static class NewsItem implements Parcelable{
+    public static class NewsItem{
         public String title;
         public String link;
         public String pubdate;
         public String description;
         public String type;
+
+        public int read;
+        public int saved;
+        public String html;
 
         public String getType() {
             return type;
@@ -61,45 +65,37 @@ public class TencentNewsXmlParser {
         public void setDescription(String description) {
             this.description = description;
         }
+        public int getRead() {
+            return read;
+        }
+        public void setRead(int read) {
+            this.read = read;
+        }
+        public int getSaved() {
+            return saved;
+        }
+        public void setSaved(int saved) { this.saved = saved; }
+        public String getHtml() {
+            return html;
+        }
+        public void setHtml(String html) {
+            this.html = html;
+        }
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(this.title);
-            dest.writeString(this.link);
-            dest.writeString(this.pubdate);
-            dest.writeString(this.description);
-            dest.writeString(this.type);
-        }
-        public NewsItem(Parcel read) {
-            title = read.readString();
-            link = read.readString();
-            pubdate = read.readString();
-            description = read.readString();
-            type = read.readString();
-        }
-        public static final Parcelable.Creator<NewsItem> CREATOR = new Parcelable.Creator<NewsItem>() {
-            @Override
-            public NewsItem createFromParcel(Parcel in) {
-                return new NewsItem(in);
-            }
-            @Override
-            public NewsItem[] newArray(int size) {
-                return new NewsItem[size];
-            }
-        };
         public NewsItem(String title, String description, String link, String pubdate, String type) {
             this.title = title;
             this.description = description;
             this.link = link;
             this.pubdate = pubdate;
             this.type = type;
+            this.read = 0;
+            this.saved = 0;
+            this.html = "";
         }
         public NewsItem(){
-
+            this.read = 0;
+            this.saved = 0;
+            this.html = "";
         }
     }
 

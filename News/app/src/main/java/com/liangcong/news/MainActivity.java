@@ -20,6 +20,16 @@ import com.liangcong.adapter.TabAdapter;
 import com.liangcong.recyclerview.RecyclerViewFragment;
 import com.liangcong.web.TencentNewsXmlParser;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
 
     private Map<String, String> channelURLs = new HashMap<>();
 
+    private static ArrayList<String> Tabs = new ArrayList<>();
+
+    final public String TABS_FILE_NAME = "TABS.json";
+
     //数据库
     private Context context;
     public static SQLiteDatabase database;
@@ -51,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         values.put(NewsDbSchema.Newstable.Cols.DESCRIPTION, item.getDescription());
         return values;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,5 +139,56 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return false;//已经取消过了，不需要取消
+    }
+
+    public static String TabsToJsonString(ArrayList<String> tabs) throws JSONException {
+        JSONStringer stringer = new JSONStringer();
+        stringer.object();
+        stringer.key("Tabs");
+        stringer.array();
+        for(int i = 0; i < Tabs.size(); i++){
+            stringer.object();
+            stringer.key("tab:name").value(Tabs.get(i));
+            stringer.endObject();
+        }
+        stringer.endArray();
+        stringer.endObject();
+        return stringer.toString();
+    }
+
+    public static ArrayList<String> jsonStringToTabs(String str) throws JSONException {
+        ArrayList<String> mTabs = new ArrayList<>();
+        JSONTokener jsonTokener = new JSONTokener(str);
+        JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+        JSONArray array = jsonObject.getJSONArray("Tabs");
+        for(int i = 0; i < array.length(); i++){
+            JSONObject temp = ((JSONObject)array.get(i));
+            mTabs.add(temp.getString("tab:name"));
+        }
+        return mTabs;
+    }
+
+    public void saveToPhone(String filename, String content) throws IOException {
+        FileOutputStream fos = openFileOutput(filename, Context.MODE_PRIVATE);
+        fos.write(content.getBytes());
+        fos.close();
+    }
+
+    public String readFromPhone(String filename) {
+        StringBuilder sb = new StringBuilder();
+        FileInputStream fis = null;
+        try {
+            fis = openFileInput(filename);
+            int tempbyte;
+            while ((tempbyte = fis.read()) != -1) {
+                sb.append((char) tempbyte);
+            }
+            fis.close();
+        } catch (FileNotFoundException e) {
+            return "";//如果是空，则使用默认Tab
+        } catch (IOException e) {
+            return "";
+        }
+        return sb.toString();
     }
 }

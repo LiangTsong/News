@@ -10,6 +10,10 @@ public class NewsDbSchema {
             public static final String PUBDATE = "pubdate";
             public static final String LINK = "link";
             public static final String TYPE = "type";
+            public static final String READ = "read";
+            public static final String SAVED = "saved";
+            public static final String HTML = "html";
+
         }
     }
 }

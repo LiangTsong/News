@@ -26,6 +26,18 @@ import com.liangcong.news.NewsCursorWrapper;
 import com.liangcong.news.R;
 import com.liangcong.web.TencentNewsXmlParser;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +53,6 @@ public class RecyclerViewFragment extends Fragment {
     private RecyclerView.LayoutManager newsLayoutManager;
     private ProgressDialog progressDialog;
 
-    private Map<String, String> channelURLs = new HashMap<>();
     public ArrayList<TencentNewsXmlParser.NewsItem> displayNews = new ArrayList<>();
 
     public static Fragment newInstance(String type) {
@@ -73,7 +84,6 @@ public class RecyclerViewFragment extends Fragment {
             type = getArguments().getString("type");
         }
 
-        channelURLs.put("国内", "http://news.qq.com/newsgn/rss_newsgn.xml");//
         loadNews(type);
 
         newsAdapter = new NewsAdapter(displayNews, newsRecyclerView.getContext());
@@ -147,7 +157,8 @@ public class RecyclerViewFragment extends Fragment {
     public void loadNews(String type){
         //newsItems.put(type, new GetNewsList(channelURLs.get(type)).getNews(type));
         final String loc_type = type;
-        final ArrayList<TencentNewsXmlParser.NewsItem> newsList = new GetNewsList(channelURLs.get(type)).getNews(type);
+
+        final ArrayList<TencentNewsXmlParser.NewsItem> newsList = new GetNewsList(getUrl(loc_type)).getNews(loc_type);
 
         new Thread(new Runnable() {
             @Override
@@ -185,6 +196,37 @@ public class RecyclerViewFragment extends Fragment {
 
             }
         }).start();
+    }
+
+    public String getUrl(String type)  {
+        InputStream is = getResources().openRawResource(R.raw.urls);
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+            is.close();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+        }
+
+        String jsonString = writer.toString();
+
+        JSONObject jsonObj = null;
+        try {
+            jsonObj = new JSONObject(jsonString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        String url = jsonObj.optString(type);
+
+        return url;
     }
 
 }
