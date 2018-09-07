@@ -10,7 +10,7 @@ public class GetNewsList {
     String URL = null;
     ArrayList<TencentNewsXmlParser.NewsItem> displayItems = new ArrayList<>();
 
-    GetNewsList(String URL){
+    public GetNewsList(String URL){
         this.URL = URL;
     }
 

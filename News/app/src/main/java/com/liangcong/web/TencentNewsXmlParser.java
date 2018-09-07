@@ -34,7 +34,7 @@ public class TencentNewsXmlParser {
         public String getType() {
             return type;
         }
-        public void setType(String title) {
+        public void setType(String type) {
             this.type = type;
         }
         public String getTitle() {
@@ -52,7 +52,7 @@ public class TencentNewsXmlParser {
         public String getDate() {
             return pubdate;
         }
-        public void setDate(String date) {
+        public void setDate(String pubdate) {
             this.pubdate = pubdate;
         }
         public String getDescription() {
