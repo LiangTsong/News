@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.liangcong.adapter.NewsAdapter;
 import com.liangcong.news.R;
@@ -79,7 +80,6 @@ public class RecyclerViewFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //showProgressDialog(MainActivity.viewPager.getContext(),"加载中......");
                             showProgressDialog(newsRecyclerView.getContext(),"加载中......");
                         }
                     });
@@ -128,3 +128,4 @@ public class RecyclerViewFragment extends Fragment {
     }
 
 }
+

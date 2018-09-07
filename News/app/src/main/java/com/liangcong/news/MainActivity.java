@@ -43,16 +43,12 @@ public class MainActivity extends AppCompatActivity {
         adapter = new TabAdapter(getSupportFragmentManager());
 
         channelURLs.put("国内", "http://news.qq.com/newsgn/rss_newsgn.xml");
-
         channelURLs.put("国际", "http://news.qq.com/newsgj/rss_newswj.xml");
-
         channelURLs.put("社会", "http://news.qq.com/newssh/rss_newssh.xml");
 
-        newsItems.put("国内", new GetNewsList(channelURLs.get("国内")).getNews());
-
-        newsItems.put("国际", new GetNewsList(channelURLs.get("国际")).getNews());
-
-        newsItems.put("社会", new GetNewsList(channelURLs.get("社会")).getNews());
+        newsItems.put("国内", new GetNewsList(channelURLs.get("国内")).getNews("国内"));
+        newsItems.put("国际", new GetNewsList(channelURLs.get("国际")).getNews("国际"));
+        newsItems.put("社会", new GetNewsList(channelURLs.get("社会")).getNews("社会"));
 
         adapter.addFragment( RecyclerViewFragment.newInstance(newsItems.get("国内")), "国内");
         adapter.addFragment( RecyclerViewFragment.newInstance(newsItems.get("国际")), "国际");

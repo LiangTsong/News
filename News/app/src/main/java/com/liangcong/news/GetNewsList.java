@@ -14,9 +14,9 @@ public class GetNewsList {
         this.URL = URL;
     }
 
-    public ArrayList<TencentNewsXmlParser.NewsItem> getNews(){
+    public ArrayList<TencentNewsXmlParser.NewsItem> getNews(String type){
 
-        NetworkActivity networkActivity = new NetworkActivity(URL);//"http://192.168.1.8:8099/rss_newsgn.xml"
+        NetworkActivity networkActivity = new NetworkActivity(URL, type);//"http://192.168.1.8:8099/rss_newsgn.xml"
         networkActivity.loadPage(new AsyncResponse(){
             @Override
             public void onDataReceivedSuccess(ArrayList<TencentNewsXmlParser.NewsItem> items) {
@@ -31,7 +31,7 @@ public class GetNewsList {
             @Override
             public void onDataReceivedFailed() {
                 //Error
-                displayItems.add(new TencentNewsXmlParser.NewsItem("空","空","空","空"));
+                displayItems.add(new TencentNewsXmlParser.NewsItem("空","空","空","xxxx-xx-xx xx:xx:xx", "无"));
             }
         });
 

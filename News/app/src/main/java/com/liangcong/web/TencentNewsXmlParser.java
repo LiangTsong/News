@@ -17,82 +17,84 @@ import java.util.List;
 public class TencentNewsXmlParser {
     // We don't use namespaces
     private static final String ns = null;
+    private String type;
+
+    public TencentNewsXmlParser(String type){
+        this.type = type;
+    }
 
     public static class NewsItem implements Parcelable{
         public String title;
         public String link;
         public String pubdate;
         public String description;
+        public String type;
 
+        public String getType() {
+            return type;
+        }
+        public void setType(String title) {
+            this.type = type;
+        }
         public String getTitle() {
             return title;
         }
-
         public void setTitle(String title) {
             this.title = title;
         }
-
         public String getLink() {
             return link;
         }
-
         public void setLink(String link) {
             this.link = link;
         }
-
         public String getDate() {
             return pubdate;
         }
-
         public void setDate(String date) {
             this.pubdate = pubdate;
         }
-
         public String getDescription() {
             return description;
         }
-
         public void setDescription(String description) {
             this.description = description;
         }
-
         @Override
         public int describeContents() {
             return 0;
         }
-
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.title);
             dest.writeString(this.link);
             dest.writeString(this.pubdate);
             dest.writeString(this.description);
+            dest.writeString(this.type);
         }
-
         public NewsItem(Parcel read) {
             title = read.readString();
             link = read.readString();
             pubdate = read.readString();
             description = read.readString();
+            type = read.readString();
         }
-
         public static final Parcelable.Creator<NewsItem> CREATOR = new Parcelable.Creator<NewsItem>() {
             @Override
             public NewsItem createFromParcel(Parcel in) {
                 return new NewsItem(in);
             }
-
             @Override
             public NewsItem[] newArray(int size) {
                 return new NewsItem[size];
             }
         };
-
-        public NewsItem(String title, String description, String link, String pubdate) {
+        public NewsItem(String title, String description, String link, String pubdate, String type) {
             this.title = title;
             this.description = description;
             this.link = link;
             this.pubdate = pubdate;
+            this.type = type;
         }
     }
 
@@ -152,7 +154,7 @@ public class TencentNewsXmlParser {
                 skip(parser);
             }
         }
-        return new NewsItem(title, description, link, pubDate);
+        return new NewsItem(title, description, link, pubDate, type);
     }
 
     // Processes title tags in the feed.

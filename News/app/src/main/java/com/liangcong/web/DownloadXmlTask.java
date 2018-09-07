@@ -25,7 +25,7 @@ class DownloadXmlTask extends AsyncTask<String, Void, ArrayList<TencentNewsXmlPa
     @Override
     protected ArrayList<TencentNewsXmlParser.NewsItem> doInBackground(String... urls) {
         try {
-            return loadXmlFromNetwork(urls[0]);
+            return loadXmlFromNetwork(urls[0], urls[1]);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
@@ -41,10 +41,10 @@ class DownloadXmlTask extends AsyncTask<String, Void, ArrayList<TencentNewsXmlPa
 
     // Uploads XML, parses it, and combines it with
     // HTML markup. Returns HTML string.
-    private ArrayList<TencentNewsXmlParser.NewsItem> loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
+    private ArrayList<TencentNewsXmlParser.NewsItem> loadXmlFromNetwork(String urlString, String type) throws XmlPullParserException, IOException {
         InputStream stream = null;
         // Instantiate the parser
-        TencentNewsXmlParser tencentNewsXmlParser = new TencentNewsXmlParser();
+        TencentNewsXmlParser tencentNewsXmlParser = new TencentNewsXmlParser(type);
         ArrayList<TencentNewsXmlParser.NewsItem> items = null;
         String title = null;
         String url = null;

@@ -7,6 +7,7 @@ public class NetworkActivity {
     public static final String ANY = "Any";*/
     //private static final String URL = "http://news.qq.com/newsgn/rss_newsgn.xml";
     private String URL;// = "http://192.168.1.8:8099/rss_newsgn.xml";
+    private String type;
 
     // Whether there is a Wi-Fi connection.
     /*private static boolean wifiConnected = false;
@@ -15,8 +16,9 @@ public class NetworkActivity {
     // Whether the display should be refreshed.
     public static boolean refreshDisplay = true;
     public static String sPref = null;*/
-    public NetworkActivity(String URL){
+    public NetworkActivity(String URL, String type){
         this.URL = URL;
+        this.type = type;
     }
 
     // Uses AsyncTask to download the XML feed
@@ -36,6 +38,6 @@ public class NetworkActivity {
         }*/
         DownloadXmlTask downloadXmlTask = new DownloadXmlTask();
         downloadXmlTask.setOnAsyncResponse(asyncResponse);
-        downloadXmlTask.execute(URL);
+        downloadXmlTask.execute(URL,type);
     }
 }
