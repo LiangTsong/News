@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.liangcong.adapter.NewsAdapter;
+import com.liangcong.news.MainActivity;
 import com.liangcong.news.R;
 import com.liangcong.web.TencentNewsXmlParser;
 
@@ -29,15 +30,22 @@ public class RecyclerViewFragment extends Fragment {
 
     private ProgressDialog progressDialog;
 
-    public static Fragment newInstance(ArrayList<TencentNewsXmlParser.NewsItem> news) {
+    /*public static Fragment newInstance(String type) {
         RecyclerViewFragment fragment = new RecyclerViewFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("news",news);
+        bundle.putParcelableArrayList("type",type);
+        fragment.setArguments(bundle);
+        return fragment;
+    }*/
+    public static Fragment newInstance(String type) {
+        RecyclerViewFragment fragment = new RecyclerViewFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("type",type);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    private ArrayList<TencentNewsXmlParser.NewsItem> displayItems = new ArrayList<>();
+    public String type;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,10 +64,10 @@ public class RecyclerViewFragment extends Fragment {
         newsRecyclerView.setLayoutManager(newsLayoutManager);
 
         if(getArguments()!=null){
-            displayItems = getArguments().getParcelableArrayList("news");
+            type = getArguments().getString("type");
         }
 
-        newsAdapter = new NewsAdapter(displayItems, newsRecyclerView.getContext());
+        newsAdapter = new NewsAdapter(MainActivity.getNews(type), newsRecyclerView.getContext());
 
         newsRecyclerView.setAdapter(newsAdapter);
 
@@ -75,7 +83,7 @@ public class RecyclerViewFragment extends Fragment {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(displayItems.size() == 0){
+                while(MainActivity.getNews(type).size() == 0){
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override

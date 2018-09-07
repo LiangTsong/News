@@ -24,8 +24,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_news);
 
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();

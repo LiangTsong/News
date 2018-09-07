@@ -56,9 +56,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         @Override
         public void onClick(View view) {
-           /*Toast.makeText(itemView.getContext(),
-                    newsItem.getTitle() + " clicked!", Toast.LENGTH_SHORT)
-                    .show();*/
            Intent intent = new Intent(itemView.getContext(), DisplayNewsActivity.class);
            String url = newsItem.link;
            intent.putExtra("NEWS_URL",url);

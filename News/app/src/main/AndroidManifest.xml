@@ -13,18 +13,17 @@
         android:theme="@style/Theme.AppCompat.Light">
         <activity
             android:name=".MainActivity"
-            android:parentActivityName="com.liangcong.news.MainActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.liangcong.news.MainActivity" />
         </activity>
-        <activity android:name=".DisplayNewsActivity"></activity>
+
+        <activity android:name=".DisplayNewsActivity">
+
+        </activity>
     </application>
 
 </manifest>

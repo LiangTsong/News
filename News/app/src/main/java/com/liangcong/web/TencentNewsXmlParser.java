@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TencentNewsXmlParser {
     // We don't use namespaces
@@ -60,6 +61,7 @@ public class TencentNewsXmlParser {
         public void setDescription(String description) {
             this.description = description;
         }
+
         @Override
         public int describeContents() {
             return 0;
@@ -95,6 +97,9 @@ public class TencentNewsXmlParser {
             this.link = link;
             this.pubdate = pubdate;
             this.type = type;
+        }
+        public NewsItem(){
+
         }
     }
 
