@@ -59,7 +59,7 @@ public class RecyclerViewFragment extends Fragment {
             displayItems = getArguments().getParcelableArrayList("news");
         }
 
-        newsAdapter = new NewsAdapter(displayItems);
+        newsAdapter = new NewsAdapter(displayItems, newsRecyclerView.getContext());
 
         newsRecyclerView.setAdapter(newsAdapter);
 

@@ -1,5 +1,7 @@
 package com.liangcong.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.liangcong.news.DisplayNewsActivity;
 import com.liangcong.news.MainActivity;
 import com.liangcong.news.R;
 import com.liangcong.recyclerview.RecyclerViewFragment;
@@ -17,6 +20,7 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
 
     private List<TencentNewsXmlParser.NewsItem> newsDataset;
+    private Context context;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -33,7 +37,9 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         public NewsViewHolder(View v) {
             super(v);
+
             itemView.setOnClickListener(this);
+
             newsTitleTextView = (TextView) v.findViewById(R.id.news_title);
             newsDescripTextView = (TextView) v.findViewById(R.id.news_content);
             newsDateTextView = (TextView) v.findViewById(R.id.date);
@@ -50,14 +56,19 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(itemView.getContext(),
+           /*Toast.makeText(itemView.getContext(),
                     newsItem.getTitle() + " clicked!", Toast.LENGTH_SHORT)
-                    .show();
+                    .show();*/
+           Intent intent = new Intent(itemView.getContext(), DisplayNewsActivity.class);
+           String message = newsItem.link;
+           intent.putExtra("MESSAGE",message);
+           context.startActivity(intent);
         }
     }
     // Provide a suitable constructor (depends on the kind of dataset)
-    public NewsAdapter(List<TencentNewsXmlParser.NewsItem> myDataset) {
+    public NewsAdapter(List<TencentNewsXmlParser.NewsItem> myDataset, Context context) {
         newsDataset = myDataset;
+        this.context = context;
     }
 
     // Create new views (invoked by the layout manager)
