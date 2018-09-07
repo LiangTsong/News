@@ -60,8 +60,8 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                     newsItem.getTitle() + " clicked!", Toast.LENGTH_SHORT)
                     .show();*/
            Intent intent = new Intent(itemView.getContext(), DisplayNewsActivity.class);
-           String message = newsItem.link;
-           intent.putExtra("MESSAGE",message);
+           String url = newsItem.link;
+           intent.putExtra("NEWS_URL",url);
            context.startActivity(intent);
         }
     }
