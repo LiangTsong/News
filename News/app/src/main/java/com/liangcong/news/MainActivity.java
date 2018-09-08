@@ -161,30 +161,39 @@ public class MainActivity extends AppCompatActivity {
         return false;//已经取消过了，不需要取消
     }
 
-    public static String TabsToJsonString(ArrayList<String> tabs) throws JSONException {
+    public static String TabsToJsonString(ArrayList<String> tabs) {
         JSONStringer stringer = new JSONStringer();
-        stringer.object();
-        stringer.key("Tabs");
-        stringer.array();
-        for(int i = 0; i < Tabs.size(); i++){
+        try {
             stringer.object();
-            stringer.key("tab:name").value(Tabs.get(i));
+            stringer.key("Tabs");
+            stringer.array();
+            for(int i = 0; i < tabs.size(); i++){
+                stringer.object();
+                stringer.key("tab:name").value(tabs.get(i));
+                stringer.endObject();
+            }
+            stringer.endArray();
             stringer.endObject();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-        stringer.endArray();
-        stringer.endObject();
+        Log.d("NEWS", "TabsToJsonString: 转为字符串："+stringer.toString());
         return stringer.toString();
     }
 
-    public static ArrayList<String> jsonStringToTabs(String str) {
+    public ArrayList<String> jsonStringToTabs(String str) {
         if(str.equals("NULL")) {
             //返回默认Tabs
             ArrayList<String> default_Tabs = new ArrayList<>();
-            default_Tabs.add("国内");
-            default_Tabs.add("国际");
-            default_Tabs.add("社会");
-            default_Tabs.add("电影");
-            default_Tabs.add("军事");
+            default_Tabs.add("国内新闻");
+            default_Tabs.add("国际新闻");
+            default_Tabs.add("社会新闻");
+            default_Tabs.add("电影娱乐");
+            default_Tabs.add("军事新闻");
+
+            saveToPhone(TABS_FILE_NAME,TabsToJsonString(default_Tabs));
+
+            Log.d("NEWS", "jsonStringToTabs: 已经存到手机");
 
             return default_Tabs;
         }
@@ -206,10 +215,14 @@ public class MainActivity extends AppCompatActivity {
         return mTabs;
     }
 
-    public void saveToPhone(String filename, String content) throws IOException {
-        FileOutputStream fos = openFileOutput(filename, Context.MODE_PRIVATE);
-        fos.write(content.getBytes());
-        fos.close();
+    public void saveToPhone(String filename, String content) {
+        try {
+            FileOutputStream fos = openFileOutput(filename, Context.MODE_PRIVATE);
+            fos.write(content.getBytes());
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String readFromPhone(String filename) {

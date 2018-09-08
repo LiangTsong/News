@@ -3,6 +3,7 @@ package com.liangcong.taborder;
 import android.content.Context;
 import android.content.Intent;
 import android.drm.DrmStore;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -59,8 +60,8 @@ public class TabOrderActivity extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listView);
 
         Tabs = jsonStringToTabs(readFromPhone(MainActivity.TABS_FILE_NAME));
+        //Log.d("NEWS", "onCreate: 获取的第一个Tag是"+ Tabs.get(0));
         oldTabs = Tabs;
-        Log.d("ORDER", "onCreate: 已经得到当前tab，第一个"+Tabs.get(0));
 
         context = this;
         tabAdapter = new TabOrderAdapter(Tabs, context);
@@ -138,11 +139,11 @@ public class TabOrderActivity extends AppCompatActivity {
         if(str.equals("NULL")) {
             //返回默认Tabs
             ArrayList<String> default_Tabs = new ArrayList<>();
-            default_Tabs.add("国内");
-            default_Tabs.add("国际");
-            default_Tabs.add("社会");
-            default_Tabs.add("电影");
-            default_Tabs.add("军事");
+            default_Tabs.add("国内新闻");
+            default_Tabs.add("国际新闻");
+            default_Tabs.add("社会新闻");
+            default_Tabs.add("电影娱乐");
+            default_Tabs.add("军事新闻");
 
             return default_Tabs;
         }
