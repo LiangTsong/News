@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 //进入标签控制页面
                 Intent intent = new Intent(context, TabOrderActivity.class);
+                Log.d("ORDER", "onOptionsItemSelected: 即将进入标签控制");
                 context.startActivity(intent);
             }
 

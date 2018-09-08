@@ -3,6 +3,7 @@ package com.liangcong.taborder;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,14 +44,17 @@ public class TabOrderActivity extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listView);
 
         Tabs = jsonStringToTabs(readFromPhone(MainActivity.TABS_FILE_NAME));
+        Log.d("ORDER", "onCreate: 已经得到当前tab，第一个"+Tabs.get(0));
 
         context = this;
         tabAdapter = new TabOrderAdapter(Tabs, context);
+        listView.setAdapter(tabAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 checkedItemPositions = listView.getCheckedItemPositions();
+                Log.d("ORDER", "onItemClick: "+position+checkedItemPositions.get(position));
             }
         });
     }
