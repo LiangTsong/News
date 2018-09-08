@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.liangcong.adapter.TabOrderAdapter;
+import com.liangcong.addtab.AddTabActivity;
 import com.liangcong.news.MainActivity;
 import com.liangcong.news.R;
 
@@ -89,15 +90,25 @@ public class TabOrderActivity extends AppCompatActivity {
             case android.R.id.home:
                 onBackPressed();
                 return true;
-            case R.id.add_tab:
-                //
+            case R.id.add_tab: {
+                Intent intent = new Intent();
+                intent.setClass(this, AddTabActivity.class);
+                startActivityForResult(intent, 2);
                 return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public String TabsToJsonString(ArrayList<String> tabs) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 2){
+            //
+        }
+    }
+
+        public String TabsToJsonString(ArrayList<String> tabs) {
 
         JSONStringer stringer = new JSONStringer();
         try {
