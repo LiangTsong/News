@@ -63,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
         values.put(NewsDbSchema.Newstable.Cols.PUBDATE, item.getDate());
         values.put(NewsDbSchema.Newstable.Cols.LINK, item.getLink());
         values.put(NewsDbSchema.Newstable.Cols.DESCRIPTION, item.getDescription());
+        values.put(NewsDbSchema.Newstable.Cols.READ, item.getRead());
+        values.put(NewsDbSchema.Newstable.Cols.SAVED, item.getSaved());
+        values.put(NewsDbSchema.Newstable.Cols.HTML, item.getHtml());
         return values;
     }
 

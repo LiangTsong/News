@@ -13,12 +13,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.liangcong.adapter.NewsAdapter;
 import com.liangcong.news.GetNewsList;
@@ -45,6 +42,7 @@ import java.util.Map;
 
 import database.NewsDbSchema.NewsDbSchema;
 
+import static com.liangcong.news.MainActivity.adapter;
 import static com.liangcong.news.MainActivity.getContentValues;
 
 public class RecyclerViewFragment extends Fragment {
@@ -52,7 +50,6 @@ public class RecyclerViewFragment extends Fragment {
     private RecyclerView newsRecyclerView;
     private RecyclerView.Adapter newsAdapter;
     private RecyclerView.LayoutManager newsLayoutManager;
-    private ProgressDialog progressDialog;
 
     public SwipeRefreshLayout newsRecyclerViewContainer;
 
@@ -67,27 +64,6 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     public String type;
-
-    /*@Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        Log.d("RV", "setUserVisibleHint: "+type + isVisibleToUser);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(newsRecyclerViewContainer==null){
-                    SystemClock.sleep(100);
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        newsRecyclerViewContainer.setRefreshing(true);
-                    }
-                });
-                loadNews(type);
-            }
-        }).start();
-    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,6 +84,7 @@ public class RecyclerViewFragment extends Fragment {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
 
+        newsRecyclerViewContainer.setProgressBackgroundColor(R.color.gray);
         /*
          * 设置手势下拉刷新的监听
          */
@@ -145,37 +122,6 @@ public class RecyclerViewFragment extends Fragment {
 
         //return newsRecyclerView;
         return newsRecyclerViewContainer;
-    }
-
-    public void showProgressDialog(Context mContext, String text) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        }
-        progressDialog.setMessage(text);	//设置内容
-        progressDialog.setCancelable(false);//点击屏幕和按返回键都不能取消加载框
-        progressDialog.show();
-
-        //设置超时自动消失
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //取消加载框
-                if(dismissProgressDialog()){
-                    //超时处理
-                }
-            }
-        }, 60000);//超时时间60秒
-    }
-
-    public Boolean dismissProgressDialog() {
-        if (progressDialog != null){
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-                return true;//取消成功
-            }
-        }
-        return false;//已经取消过了，不需要取消
     }
 
     public static ArrayList<TencentNewsXmlParser.NewsItem> getNews(String type){
@@ -227,7 +173,7 @@ public class RecyclerViewFragment extends Fragment {
 
                 //更新
                 displayNews.clear();
-                displayNews.addAll(getNews(loc_type));
+                displayNews.addAll(0,getNews(loc_type));
 
                 while(displayNews.size() == 0){
                     SystemClock.sleep(100);
@@ -276,6 +222,4 @@ public class RecyclerViewFragment extends Fragment {
 
         return url;
     }
-
 }
-
