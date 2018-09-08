@@ -59,14 +59,11 @@ public class MainActivity extends AppCompatActivity {
 
     public static ContentValues getContentValues(TencentNewsXmlParser.NewsItem item){
         ContentValues values = new ContentValues();
-        values.put(NewsDbSchema.Newstable.Cols.TITLE, item.getTitle());
-        values.put(NewsDbSchema.Newstable.Cols.TYPE, item.getType());
-        values.put(NewsDbSchema.Newstable.Cols.PUBDATE, item.getDate());
-        values.put(NewsDbSchema.Newstable.Cols.LINK, item.getLink());
-        values.put(NewsDbSchema.Newstable.Cols.DESCRIPTION, item.getDescription());
-        values.put(NewsDbSchema.Newstable.Cols.READ, item.getRead());
-        values.put(NewsDbSchema.Newstable.Cols.SAVED, item.getSaved());
-        values.put(NewsDbSchema.Newstable.Cols.HTML, item.getHtml());
+        values.put(NewsDbSchema.Newstable.Cols.TITLE, item.title);
+        values.put(NewsDbSchema.Newstable.Cols.TYPE, item.type);
+        values.put(NewsDbSchema.Newstable.Cols.PUBDATE, item.pubdate);
+        values.put(NewsDbSchema.Newstable.Cols.LINK, item.link);
+        values.put(NewsDbSchema.Newstable.Cols.DESCRIPTION, item.description);
         return values;
     }
 

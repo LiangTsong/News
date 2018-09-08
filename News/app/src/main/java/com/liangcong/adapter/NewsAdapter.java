@@ -23,7 +23,6 @@ import java.util.List;
 import database.NewsDbSchema.NewsDbSchema;
 
 import static com.liangcong.news.MainActivity.getContentValues;
-import static database.NewsDbSchema.NewsDbSchema.Newstable.Cols.HTML;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
 
@@ -69,7 +68,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             intent.putExtra("NEWS_URL",url);
             context.startActivity(intent);
             //同时，该页面被标记为看过
-            newsItem.setRead(1);
             newsItem.setTitle("<font color=\"#c2c2c2\">" +newsItem.getTitle());
             newsItem.setDescription("<font color=\"#c2c2c2\">" +newsItem.getDescription());
             updateNews(newsItem);
@@ -84,7 +82,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
     // Create new views (invoked by the layout manager)
     @Override
-    public NewsAdapter.NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.news_textview, parent, false);

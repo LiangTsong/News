@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -61,6 +62,7 @@ public class AddTabActivity extends AppCompatActivity {
 
         ActionBar ab = getSupportActionBar();
         ab.setTitle("添加标签");
+        ab.setDisplayHomeAsUpEnabled(true);
 
         getOldTabs();
 
@@ -76,6 +78,16 @@ public class AddTabActivity extends AppCompatActivity {
                 Log.d("ORDER", "onItemClick: "+position+checkedItemPositions.get(position));
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void getOldTabs()  {

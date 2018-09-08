@@ -3,6 +3,7 @@ package com.liangcong.news;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
@@ -35,6 +36,7 @@ public class DisplayNewsActivity extends AppCompatActivity {
     private static final String APP_CACHE_DIRNAME = "/webcache";
     private String url;
     private String newsTitle;
+    Menu readMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +95,20 @@ public class DisplayNewsActivity extends AppCompatActivity {
             }
         });
 
-
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        readMenu = menu;
+        if(getCollectedItem(url)!=null){//已收藏
+            Log.d("NEWS", "onPrepareOptionsMenu: 已收藏");
+            readMenu.findItem(R.id.add_news).setIcon(R.drawable.ic_baseline_star_24px);
+        }else {
+            readMenu.findItem(R.id.add_news).setIcon(R.drawable.ic_baseline_star_border_24px);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,20 +121,35 @@ public class DisplayNewsActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case android.R.id.home:
-                onBackPressed();
+            case android.R.id.home: {
+                //返回
+                Intent intent=new Intent();
+                setResult(30,intent);
+                finish();
                 return true;
+            }
             case R.id.add_news: {
-                //该页面被标记为看过
-                TencentNewsXmlParser.NewsItem newsItem = getItem(url);
-                if(newsItem.getSaved()==1){
-                    Toast.makeText(getApplicationContext(), "不能重复收藏！",
+                //标记收藏
+                if(getCollectedItem(url) == null) {
+                    Toast.makeText(getApplicationContext(), "已收藏，请到首页收藏列表查看",
                             Toast.LENGTH_SHORT).show();
+                    //先获取item
+                    TencentNewsXmlParser.NewsItem newsItem = getItem(url);
+                    //再写item到收藏db
+                    ContentValues values = getContentValues(newsItem);
+                    MainActivity.database.insertWithOnConflict(NewsDbSchema.Newstable.NAME1, null,
+                            values, SQLiteDatabase.CONFLICT_IGNORE);
+                    readMenu.findItem(R.id.add_news).setIcon(R.drawable.ic_baseline_star_24px);
+                }else{
+                    Toast.makeText(getApplicationContext(), "已移出收藏",
+                            Toast.LENGTH_SHORT).show();
+                    //删除
+                    TencentNewsXmlParser.NewsItem newsItem = getCollectedItem(url);
+                    ContentValues values = getContentValues(newsItem);
+                    MainActivity.database.delete(NewsDbSchema.Newstable.NAME1, NewsDbSchema.Newstable.Cols.LINK +
+                            " = ? ", new String[] {newsItem.link});
+                    readMenu.findItem(R.id.add_news).setIcon(R.drawable.ic_baseline_star_border_24px);
                 }
-                newsItem.setSaved(1);
-                updateNews(newsItem);
-                Toast.makeText(getApplicationContext(), "已经收藏新闻，请到首页收藏列表查看",
-                        Toast.LENGTH_SHORT).show();
                 return true;
             }
         }
@@ -129,7 +158,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
     }
 
     public void updateNews(TencentNewsXmlParser.NewsItem item){
-        String url = item.getLink();
         ContentValues values = getContentValues(item);
         MainActivity.database.update(NewsDbSchema.Newstable.NAME, values, NewsDbSchema.Newstable.Cols.LINK +
                 " = ? ", new String[] {item.getLink()});
@@ -148,12 +176,41 @@ public class DisplayNewsActivity extends AppCompatActivity {
         }finally {
             cursor.close();
         }
-        return item;
+        return null;
     }
 
     private static NewsCursorWrapper queryNews(String whereClause, String[] whereArgs){
         Cursor cursor = MainActivity.database.query(
                 NewsDbSchema.Newstable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                NewsDbSchema.Newstable.Cols.PUBDATE+" DESC"
+        );
+        return new NewsCursorWrapper(cursor);
+    }
+
+    public static TencentNewsXmlParser.NewsItem getCollectedItem(String link){
+        TencentNewsXmlParser.NewsItem item = null;
+        NewsCursorWrapper cursor = queryCollectedNews(null,null);
+        try{
+            cursor.moveToFirst();
+            while(!cursor.isAfterLast()){
+                item = cursor.getNewsItem();
+                if ( item.link.equals(link)) return item;
+                cursor.moveToNext();
+            }
+        }finally {
+            cursor.close();
+        }
+        return null;
+    }
+
+    private static NewsCursorWrapper queryCollectedNews(String whereClause, String[] whereArgs){
+        Cursor cursor = MainActivity.database.query(
+                NewsDbSchema.Newstable.NAME1,
                 null,
                 whereClause,
                 whereArgs,

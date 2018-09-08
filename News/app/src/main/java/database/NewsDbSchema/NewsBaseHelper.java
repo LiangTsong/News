@@ -15,16 +15,23 @@ public class NewsBaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db){
         db.execSQL("create table " + NewsDbSchema.Newstable.NAME + "(" +
-        " _id integer primary key autoincrement, " +
+        " news_id integer primary key autoincrement, " +
                 NewsDbSchema.Newstable.Cols.TITLE + ", "+
                 NewsDbSchema.Newstable.Cols.TYPE + ", " +
                 NewsDbSchema.Newstable.Cols.PUBDATE + ", " +
                 NewsDbSchema.Newstable.Cols.DESCRIPTION + ", " +
-                NewsDbSchema.Newstable.Cols.LINK + " unique, " +
-                NewsDbSchema.Newstable.Cols.READ + " integer, " +
-                NewsDbSchema.Newstable.Cols.SAVED + " integer, " +
-                NewsDbSchema.Newstable.Cols.HTML + " )");
+                NewsDbSchema.Newstable.Cols.LINK + " unique)");
+
+        db.execSQL("create table " + NewsDbSchema.Newstable.NAME1 + "(" +
+                " collection_id integer primary key autoincrement, " +
+                NewsDbSchema.Newstable.Cols.TITLE + ", "+
+                NewsDbSchema.Newstable.Cols.TYPE + ", " +
+                NewsDbSchema.Newstable.Cols.PUBDATE + ", " +
+                NewsDbSchema.Newstable.Cols.DESCRIPTION + ", " +
+                NewsDbSchema.Newstable.Cols.LINK + " unique)");
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){

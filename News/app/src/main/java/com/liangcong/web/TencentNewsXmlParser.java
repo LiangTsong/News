@@ -31,10 +31,6 @@ public class TencentNewsXmlParser {
         public String description;
         public String type;
 
-        public int read;
-        public int saved;
-        public String html;
-
         public String getType() {
             return type;
         }
@@ -65,22 +61,6 @@ public class TencentNewsXmlParser {
         public void setDescription(String description) {
             this.description = description;
         }
-        public int getRead() {
-            return read;
-        }
-        public void setRead(int read) {
-            this.read = read;
-        }
-        public int getSaved() {
-            return saved;
-        }
-        public void setSaved(int saved) { this.saved = saved; }
-        public String getHtml() {
-            return html;
-        }
-        public void setHtml(String html) {
-            this.html = html;
-        }
 
         public NewsItem(String title, String description, String link, String pubdate, String type) {
             this.title = title;
@@ -88,14 +68,8 @@ public class TencentNewsXmlParser {
             this.link = link;
             this.pubdate = pubdate;
             this.type = type;
-            this.read = 0;
-            this.saved = 0;
-            this.html = "";
         }
         public NewsItem(){
-            this.read = 0;
-            this.saved = 0;
-            this.html = "";
         }
     }
 
