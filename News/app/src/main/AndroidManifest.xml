@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
         <activity
-            android:name=".MainActivity"
+            android:name="com.java.liangcong.news.MainActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,22 +24,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DisplayNewsActivity"
-            android:parentActivityName=".MainActivity">
+            android:name="com.java.liangcong.news.DisplayNewsActivity"
+            android:parentActivityName="com.java.liangcong.news.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.liangcong.news.MainActivity" />
+                android:value="com.liangcong.news.com.java.news.MainActivity" />
         </activity>
         <activity
-            android:name="com.liangcong.taborder.TabOrderActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name="com.java.liangcong.taborder.TabOrderActivity"
+            android:parentActivityName="com.java.liangcong.news.MainActivity" />
 
         <meta-data
             android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.liangcong.news.MainActivity" />
+            android:value="com.liangcong.news.com.java.news.MainActivity" />
 
-        <activity android:name="com.liangcong.addtab.AddTabActivity" />
-        <activity android:name="com.liangcong.collection.CollectionActivity"></activity>
+        <activity android:name="com.java.liangcong.addtab.AddTabActivity" />
+        <activity android:name="com.java.liangcong.collection.CollectionActivity"></activity>
     </application>
 
 </manifest>
