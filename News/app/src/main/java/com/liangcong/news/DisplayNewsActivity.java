@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -25,6 +26,8 @@ public class DisplayNewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_news);
 
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
@@ -74,18 +77,19 @@ public class DisplayNewsActivity extends AppCompatActivity {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            webView.evaluateJavascript(
-                    "(function() {return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');})();",
-                    new ValueCallback<String>() {
-                        @Override
-                        public void onReceiveValue(String html) {
-                            Log.d("HTML", "whd >>html:" + html);
-                        }
-                    });
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
 
-
+        return super.onOptionsItemSelected(item);
     }
 }
 

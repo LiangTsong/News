@@ -7,5 +7,10 @@
         android:icon="@drawable/ic_baseline_star_24px"
         android:title="我的收藏"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/action_tab"
+        android:icon="@drawable/ic_baseline_reorder_24px"
+        android:title="标签排序"
+        app:showAsAction="never"/>
 
 </menu>

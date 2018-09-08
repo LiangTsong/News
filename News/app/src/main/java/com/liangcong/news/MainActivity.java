@@ -3,6 +3,7 @@ package com.liangcong.news;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
@@ -17,7 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.liangcong.adapter.TabAdapter;
+import com.liangcong.adapter.TabOrderAdapter;
 import com.liangcong.recyclerview.RecyclerViewFragment;
+import com.liangcong.taborder.TabOrderActivity;
 import com.liangcong.web.TencentNewsXmlParser;
 
 import org.json.JSONArray;
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static ArrayList<String> Tabs = new ArrayList<>();
 
-    final public String TABS_FILE_NAME = "TABS.json";
+    final static public String TABS_FILE_NAME = "TABS.json";
 
     //数据库
     private Context context;
@@ -83,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
 
         adapter = new TabAdapter(getSupportFragmentManager());
 
-        adapter.addFragment( RecyclerViewFragment.newInstance("国内"), "国内");
-        adapter.addFragment( RecyclerViewFragment.newInstance("国际"), "国际");
-        adapter.addFragment( RecyclerViewFragment.newInstance("社会"), "社会");
-        adapter.addFragment( RecyclerViewFragment.newInstance("图片"), "图片");
-        adapter.addFragment( RecyclerViewFragment.newInstance("军事"), "军事");
+        //读取标签设置
+        Tabs = jsonStringToTabs(readFromPhone(TABS_FILE_NAME));
+        for(String tab: Tabs){
+            adapter.addFragment( RecyclerViewFragment.newInstance(tab), tab);
+        }
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -107,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_collection:
                 //未完待续...当点按收藏按钮时...
                 return true;
+            case R.id.action_tab:
+            {
+                //进入标签控制页面
+                Intent intent = new Intent(context, TabOrderActivity.class);
+                context.startActivity(intent);
+            }
 
             default:
                 // If we got here, the user's action was not recognized.
@@ -163,15 +172,33 @@ public class MainActivity extends AppCompatActivity {
         return stringer.toString();
     }
 
-    public static ArrayList<String> jsonStringToTabs(String str) throws JSONException {
-        ArrayList<String> mTabs = new ArrayList<>();
-        JSONTokener jsonTokener = new JSONTokener(str);
-        JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
-        JSONArray array = jsonObject.getJSONArray("Tabs");
-        for(int i = 0; i < array.length(); i++){
-            JSONObject temp = ((JSONObject)array.get(i));
-            mTabs.add(temp.getString("tab:name"));
+    public static ArrayList<String> jsonStringToTabs(String str) {
+        if(str.equals("")) {
+            //返回默认Tabs
+            ArrayList<String> default_Tabs = new ArrayList<>();
+            default_Tabs.add("国内");
+            default_Tabs.add("国际");
+            default_Tabs.add("社会");
+            default_Tabs.add("电影");
+            default_Tabs.add("军事");
+
+            return default_Tabs;
         }
+
+        ArrayList<String> mTabs = new ArrayList<>();
+        try {
+            JSONTokener jsonTokener = new JSONTokener(str);
+            JSONObject jsonObject = (JSONObject) jsonTokener.nextValue();
+            JSONArray array = jsonObject.getJSONArray("Tabs");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject temp = null;
+                temp = ((JSONObject) array.get(i));
+                mTabs.add(temp.getString("tab:name"));
+            }
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
+
         return mTabs;
     }
 

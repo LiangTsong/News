@@ -72,7 +72,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             newsItem.setRead(1);
             newsItem.setTitle("<font color=\"#c2c2c2\">" +newsItem.getTitle());
             newsItem.setDescription("<font color=\"#c2c2c2\">" +newsItem.getDescription());
-            newsItem.setDate("<font color=\"#c2c2c2\">" +newsItem.getDate());
             updateNews(newsItem);
             notifyDataSetChanged();
         }

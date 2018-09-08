@@ -149,7 +149,7 @@ public class RecyclerViewFragment extends Fragment {
                 whereArgs,
                 null,
                 null,
-                null
+                NewsDbSchema.Newstable.Cols.PUBDATE+" DESC"
         );
         return new NewsCursorWrapper(cursor);
     }
@@ -179,14 +179,16 @@ public class RecyclerViewFragment extends Fragment {
                     SystemClock.sleep(100);
                 }
 
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        newsRecyclerViewContainer.setRefreshing(false);
-                        //更新
-                        newsAdapter.notifyDataSetChanged();
-                    }
-                });
+                if(getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            newsRecyclerViewContainer.setRefreshing(false);
+                            //更新
+                            newsAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
 
             }
         }).start();

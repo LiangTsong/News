@@ -43,7 +43,8 @@
             android:layout_weight="10000"
             android:gravity="right"
             android:text="xxxx-xx-xx xx:xx:xx"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:textColor="#c2c2c2" />
 
     </LinearLayout>
 

@@ -3,5 +3,6 @@
   "国际":"http://news.qq.com/newsgj/rss_newswj.xml",
   "社会":"http://news.qq.com/newssh/rss_newssh.xml",
   "图片":"http://news.qq.com/photon/rss_photo.xml",
-  "军事":"http://news.qq.com/milite/rss_milit.xml"
+  "军事":"http://news.qq.com/milite/rss_milit.xml",
+  "电影":"http://ent.qq.com/movie/rss_movie.xml"
 }
