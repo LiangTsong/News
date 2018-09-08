@@ -38,7 +38,8 @@
             android:name="android.support.PARENT_ACTIVITY"
             android:value="com.liangcong.news.MainActivity" />
 
-        <activity android:name="com.liangcong.addtab.AddTabActivity"></activity>
+        <activity android:name="com.liangcong.addtab.AddTabActivity" />
+        <activity android:name="com.liangcong.collection.CollectionActivity"></activity>
     </application>
 
 </manifest>

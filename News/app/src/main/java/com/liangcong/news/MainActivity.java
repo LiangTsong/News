@@ -15,7 +15,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.liangcong.adapter.CollectedNewsAdapter;
 import com.liangcong.adapter.TabAdapter;
+import com.liangcong.addtab.AddTabActivity;
+import com.liangcong.collection.CollectionActivity;
 import com.liangcong.recyclerview.RecyclerViewFragment;
 import com.liangcong.taborder.TabOrderActivity;
 import com.liangcong.web.TencentNewsXmlParser;
@@ -43,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
     public static TabAdapter adapter;
     private TabLayout tabLayout;
     public static ViewPager viewPager;
-
-    private ProgressDialog progressDialog;
 
     private Map<String, String> channelURLs = new HashMap<>();
 
@@ -104,9 +105,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_collection:
-                //未完待续...当点按收藏按钮时...
+            case R.id.action_collection: {
+                //当点按收藏按钮时
+                Intent intent = new Intent();
+                intent.setClass(this, CollectionActivity.class);
+                startActivity(intent);
                 return true;
+            }
             case R.id.action_tab:
             {
                 //进入标签控制页面
@@ -127,38 +132,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d("NEWS", "onActivityResult: if执行");
             update();
         }
-    }
-
-
-    public void showProgressDialog(Context mContext, String text) {
-        if (progressDialog == null) {
-            progressDialog = new ProgressDialog(mContext);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        }
-        progressDialog.setMessage(text);	//设置内容
-        progressDialog.setCancelable(false);//点击屏幕和按返回键都不能取消加载框
-        progressDialog.show();
-
-        //设置超时自动消失
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //取消加载框
-                if(dismissProgressDialog()){
-                    //超时处理
-                }
-            }
-        }, 60000);//超时时间60秒
-    }
-
-    public Boolean dismissProgressDialog() {
-        if (progressDialog != null){
-            if (progressDialog.isShowing()) {
-                progressDialog.dismiss();
-                return true;//取消成功
-            }
-        }
-        return false;//已经取消过了，不需要取消
     }
 
     public static String TabsToJsonString(ArrayList<String> tabs) {
