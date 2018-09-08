@@ -155,7 +155,6 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     public void loadNews(String type){
-        //newsItems.put(type, new GetNewsList(channelURLs.get(type)).getNews(type));
         final String loc_type = type;
 
         final ArrayList<TencentNewsXmlParser.NewsItem> newsList = new GetNewsList(getUrl(loc_type)).getNews(loc_type);
@@ -179,6 +178,7 @@ public class RecyclerViewFragment extends Fragment {
                 }
 
                 //更新
+                displayNews.clear();
                 displayNews.addAll(getNews(loc_type));
 
                 while(displayNews.size() == 0){
