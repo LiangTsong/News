@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TabAdapter extends FragmentStatePagerAdapter {
-    public final List<Fragment> mFragmentList = new ArrayList<>();
-    public final List<String> mFragmentTitleList = new ArrayList<>();
+    public List<Fragment> mFragmentList = new ArrayList<>();
+    public List<String> mFragmentTitleList = new ArrayList<>();
     public TabAdapter(FragmentManager fm) {
         super(fm);
     }

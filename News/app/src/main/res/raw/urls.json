@@ -1,3 +1,7 @@
 {
-  "国内":"http://news.qq.com/newsgn/rss_newsgn.xml"
+  "国内":"http://news.qq.com/newsgn/rss_newsgn.xml",
+  "国际":"http://news.qq.com/newsgj/rss_newswj.xml",
+  "社会":"http://news.qq.com/newssh/rss_newssh.xml",
+  "图片":"http://news.qq.com/photon/rss_photo.xml",
+  "军事":"http://news.qq.com/milite/rss_milit.xml"
 }

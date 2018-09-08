@@ -81,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         adapter = new TabAdapter(getSupportFragmentManager());
 
         adapter.addFragment( RecyclerViewFragment.newInstance("国内"), "国内");
+        adapter.addFragment( RecyclerViewFragment.newInstance("国际"), "国际");
+        adapter.addFragment( RecyclerViewFragment.newInstance("社会"), "社会");
+        adapter.addFragment( RecyclerViewFragment.newInstance("图片"), "图片");
+        adapter.addFragment( RecyclerViewFragment.newInstance("军事"), "军事");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
