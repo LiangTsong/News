@@ -16,11 +16,13 @@ import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.apache.http.util.EncodingUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 import org.json.JSONTokener;
 
 import java.io.BufferedReader;
@@ -60,7 +62,7 @@ public class AddTabActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setTitle("添加标签");
 
-        getMap();
+        getOldTabs();
 
         context = this;
         listView = (ListView)findViewById(R.id.add_listView);
@@ -76,7 +78,7 @@ public class AddTabActivity extends AppCompatActivity {
         });
     }
 
-    public void getMap()  {
+    public void getOldTabs()  {
         InputStream is = getResources().openRawResource(R.raw.urls);
         Writer writer = new StringWriter();
         char[] buffer = new char[1024];
@@ -101,6 +103,27 @@ public class AddTabActivity extends AppCompatActivity {
         for(String tab: tab_urls.keySet()){
             allTabs.add(tab);
         }
+    }
+
+    public String TabsToJsonString(ArrayList<String> tabs) {
+
+        JSONStringer stringer = new JSONStringer();
+        try {
+            stringer.object();
+            stringer.key("Tabs");
+            stringer.array();
+            for(int i = 0; i < tabs.size(); i++){
+                stringer.object();
+                stringer.key("tab:name").value(tabs.get(i));
+                stringer.endObject();
+            }
+            stringer.endArray();
+            stringer.endObject();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return stringer.toString();
     }
 
     public ArrayList<String> jsonStringToTabs(String str) {
@@ -154,7 +177,34 @@ public class AddTabActivity extends AppCompatActivity {
         return res;
     }
 
-    public void addTabs(View view){
 
+    public void addTabs(View view){
+        String repeatedTags = "[";
+        boolean flag = false;
+        //先全变成未选择
+        listView.setSelected(false);
+        for(int i = 0; i < allTabs.size(); i++){
+            if(checkedItemPositions.get(i)==true){
+                //添加
+                if(!oldTabs.contains(allTabs.get(i))){
+                    oldTabs.add(allTabs.get(i));
+                }else{
+                    //重复
+                    flag = true;
+                    repeatedTags+= (" " +allTabs.get(i));
+                }
+            }
+        }
+        repeatedTags+="]";
+        if(flag) Toast.makeText(getApplicationContext(), "不能重复添加标签:" + repeatedTags,
+                Toast.LENGTH_SHORT).show();
+
+        //储存
+        saveToPhone(MainActivity.TABS_FILE_NAME,TabsToJsonString(oldTabs));
+        //返回
+        Intent intent=new Intent();
+        setResult(20,intent);
+        finish();
     }
+
 }

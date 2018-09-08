@@ -93,7 +93,7 @@ public class TabOrderActivity extends AppCompatActivity {
             case R.id.add_tab: {
                 Intent intent = new Intent();
                 intent.setClass(this, AddTabActivity.class);
-                startActivityForResult(intent, 2);
+                startActivityForResult(intent, 20);
                 return true;
             }
         }
@@ -103,8 +103,13 @@ public class TabOrderActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == 2){
-            //
+        if(requestCode == 20){
+            //更新
+            Tabs = jsonStringToTabs(readFromPhone(MainActivity.TABS_FILE_NAME));
+            oldTabs = Tabs;
+            context = this;
+            tabAdapter = new TabOrderAdapter(Tabs, context);
+            listView.setAdapter(tabAdapter);
         }
     }
 
@@ -115,9 +120,9 @@ public class TabOrderActivity extends AppCompatActivity {
             stringer.object();
             stringer.key("Tabs");
             stringer.array();
-            for(int i = 0; i < Tabs.size(); i++){
+            for(int i = 0; i < tabs.size(); i++){
                 stringer.object();
-                stringer.key("tab:name").value(Tabs.get(i));
+                stringer.key("tab:name").value(tabs.get(i));
                 stringer.endObject();
             }
             stringer.endArray();
