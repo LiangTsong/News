@@ -30,7 +30,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.liangcong.news.MainActivity" />
         </activity>
-        <activity android:name="com.liangcong.taborder.TabOrderActivity"></activity>
+        <activity
+            android:name="com.liangcong.taborder.TabOrderActivity"
+            android:parentActivityName=".MainActivity" />
+
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.liangcong.news.MainActivity" />
+
+        <activity android:name="com.liangcong.addtab.AddTabActivity"></activity>
     </application>
 
 </manifest>

@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckedTextView;
 import android.widget.TextView;
 
 import com.liangcong.news.R;
+import com.liangcong.taborder.CheckableLayout;
 
 import java.util.ArrayList;
 

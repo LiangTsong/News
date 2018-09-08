@@ -4,10 +4,8 @@ import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -18,11 +16,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.liangcong.adapter.TabAdapter;
-import com.liangcong.adapter.TabOrderAdapter;
 import com.liangcong.recyclerview.RecyclerViewFragment;
 import com.liangcong.taborder.TabOrderActivity;
 import com.liangcong.web.TencentNewsXmlParser;
 
+import org.apache.http.util.EncodingUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +34,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import database.NewsDbSchema.NewsBaseHelper;
 import database.NewsDbSchema.NewsDbSchema;
@@ -115,14 +112,20 @@ public class MainActivity extends AppCompatActivity {
                 //进入标签控制页面
                 Intent intent = new Intent(context, TabOrderActivity.class);
                 Log.d("ORDER", "onOptionsItemSelected: 即将进入标签控制");
-                context.startActivity(intent);
+                startActivityForResult(intent,10);
             }
 
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("NEWS", "onActivityResult: 已经返回");
+        if (requestCode==10){
+            Log.d("NEWS", "onActivityResult: if执行");
+            update();
         }
     }
 
@@ -174,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static ArrayList<String> jsonStringToTabs(String str) {
-        if(str.equals("")) {
+        if(str.equals("NULL")) {
             //返回默认Tabs
             ArrayList<String> default_Tabs = new ArrayList<>();
             default_Tabs.add("国内");
@@ -210,20 +213,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String readFromPhone(String filename) {
-        StringBuilder sb = new StringBuilder();
-        FileInputStream fis = null;
-        try {
-            fis = openFileInput(filename);
-            int tempbyte;
-            while ((tempbyte = fis.read()) != -1) {
-                sb.append((char) tempbyte);
-            }
-            fis.close();
+        String res = "";
+        try{
+            FileInputStream fin = openFileInput(MainActivity.TABS_FILE_NAME);
+            int length = fin.available();
+            byte [] buffer = new byte[length];
+            fin.read(buffer);
+            res = EncodingUtils.getString(buffer, "UTF-8");
+            fin.close();
         } catch (FileNotFoundException e) {
-            return "";//如果是空，则使用默认Tab
+            return "NULL";//如果是空，则使用默认Tab
         } catch (IOException e) {
-            return "";
+            return "NULL";//如果是空，则使用默认Tab
         }
-        return sb.toString();
+        return res;
+    }
+
+    public void update(){
+        adapter = new TabAdapter(getSupportFragmentManager());
+        //读取标签设置
+        Tabs = jsonStringToTabs(readFromPhone(TABS_FILE_NAME));
+        for(String tab: Tabs){
+            adapter.addFragment( RecyclerViewFragment.newInstance(tab), tab);
+        }
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
     }
 }

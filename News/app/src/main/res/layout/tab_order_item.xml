@@ -11,11 +11,15 @@
         android:id="@+id/tabName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:duplicateParentState="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="30dp"
-        tools:text="测试数据"/>
+        android:layout_marginTop="8dp"
+        android:duplicateParentState="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:textColor="@color/black"
+        tools:text="标签" />
 
 
     <ImageView

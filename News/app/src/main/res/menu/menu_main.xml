@@ -10,7 +10,7 @@
     <item
         android:id="@+id/action_tab"
         android:icon="@drawable/ic_baseline_reorder_24px"
-        android:title="标签排序"
+        android:title="标签管理"
         app:showAsAction="never"/>
 
 </menu>
