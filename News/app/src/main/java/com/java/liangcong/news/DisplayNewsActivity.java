@@ -1,32 +1,63 @@
 package com.java.liangcong.news;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.java.liangcong.web.TencentNewsXmlParser;
 import com.liangcong.news.R;
 
+import org.apache.http.util.TextUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import database.NewsDbSchema.NewsDbSchema;
+import kr.co.namee.permissiongen.PermissionFail;
+import kr.co.namee.permissiongen.PermissionGen;
+import kr.co.namee.permissiongen.PermissionSuccess;
 
 public class DisplayNewsActivity extends AppCompatActivity {
     private static final String APP_CACHE_DIRNAME = "/webcache";
     private String url;
+    private WebView webView;
     private String newsTitle;
     Menu readMenu;
+    public final int SUCCESSCODE = 666;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +71,7 @@ public class DisplayNewsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         url = intent.getStringExtra("NEWS_URL");
 
-        WebView webView = (WebView) findViewById(R.id.web_view);
+        webView = (WebView) findViewById(R.id.web_view);
 
         webView.getSettings().setJavaScriptEnabled(true);
 
@@ -142,6 +173,15 @@ public class DisplayNewsActivity extends AppCompatActivity {
                 }
                 return true;
             }
+            case R.id.share:{
+                Toast.makeText(getApplicationContext(), "即将开始分享",
+                        Toast.LENGTH_SHORT).show();
+                //分享
+                //权限申请，成功后分享
+                permissiongen();
+
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -203,6 +243,158 @@ public class DisplayNewsActivity extends AppCompatActivity {
                 NewsDbSchema.Newstable.Cols.PUBDATE+" DESC"
         );
         return new NewsCursorWrapper(cursor);
+    }
+
+    private void permissiongen() {
+        //处理需要动态申请的权限
+        PermissionGen.with(this)
+                .addRequestCode(SUCCESSCODE)
+                .permissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+
+                )
+                .request();
+    }
+
+    //申请权限结果的返回
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        PermissionGen.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    //权限申请成功
+    @PermissionSuccess(requestCode = SUCCESSCODE)
+    public void doSomething() {
+        //分享
+        //分享
+        File f = saveBitmapToFile("NEWS_SHARE",shotActivityNoBar(this));//储存
+        Log.d("NEWS", "onOptionsItemSelected: 已经储存图片");
+        AlbumScan("NEWS_SHARE");
+        TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
+        Log.d("NEWS", "onOptionsItemSelected: 即将分享");
+        //shareImg(itemToShare.title, itemToShare.link, itemToShare.description, getImageContentUri(this, f));
+        shareText(Html.fromHtml(itemToShare.title).toString(), itemToShare.link, Html.fromHtml("【"+itemToShare.type+"】"+itemToShare.title +" 【 "+ itemToShare.link + "】 " +itemToShare.description).toString() + "……");
+
+    }
+    //申请失败
+    @PermissionFail(requestCode = SUCCESSCODE)
+    public void doFailSomething() {
+    }
+
+    public Bitmap shotActivityNoBar(Activity activity) {
+        // 获取windows中最顶层的view
+        View view = activity.getWindow().getDecorView();
+        view.buildDrawingCache();
+
+        // 获取状态栏高度
+        Rect rect = new Rect();
+        view.getWindowVisibleDisplayFrame(rect);
+        int statusBarHeights = rect.top;
+        Display display = activity.getWindowManager().getDefaultDisplay();
+
+        // 获取屏幕宽和高
+        int widths = display.getWidth();
+        int heights = display.getHeight();
+
+        // 允许当前窗口保存缓存信息
+        view.setDrawingCacheEnabled(true);
+
+        // 去掉状态栏
+        Bitmap bmp = Bitmap.createBitmap(view.getDrawingCache(), 0,
+                statusBarHeights, widths, heights - statusBarHeights);
+
+        // 销毁缓存信息
+        view.destroyDrawingCache();
+
+        return bmp;
+    }
+
+    public File saveBitmapToFile(String fileName, Bitmap bitmap) {
+
+        if (TextUtils.isEmpty(fileName) || bitmap == null) return null;
+        File f = new File(fileName);
+        try {
+            f.createNewFile();
+            FileOutputStream fOut = new FileOutputStream(f);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (FileNotFoundException e) {
+            Log.i("ScreenShotUtil", "保存失败");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return f;
+    }
+
+    public void AlbumScan(String fileName) {
+        MediaScannerConnection.scanFile(webView.getContext(), new String[]{fileName}, new String[]{"image/jpeg"}, null);
+    }
+
+    private void shareImg(String dlgTitle, String subject, String content,
+                          Uri uri) {
+        if (uri == null) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        if (subject != null && !"".equals(subject)) {
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        }
+        if (content != null && !"".equals(content)) {
+            intent.putExtra(Intent.EXTRA_TEXT, content);
+        }
+
+        // 设置弹出框标题
+        if (dlgTitle != null && !"".equals(dlgTitle)) { // 自定义标题
+            startActivity(Intent.createChooser(intent, dlgTitle));
+        } else { // 系统默认标题
+            startActivity(intent);
+        }
+    }
+
+
+    public static Uri getImageContentUri(Context context, java.io.File imageFile) {
+        String filePath = imageFile.getAbsolutePath();
+        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=? ",
+                new String[]{filePath}, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+            Uri baseUri = Uri.parse("content://media/external/images/media");
+            return Uri.withAppendedPath(baseUri, "" + id);
+        } else {
+            if (imageFile.exists()) {
+                ContentValues values = new ContentValues();
+                values.put(MediaStore.Images.Media.DATA, filePath);
+                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            } else {
+                return null;
+            }
+        }
+    }
+
+    private void shareText(String dlgTitle, String subject, String content) {
+        if (content == null || "".equals(content)) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        if (subject != null && !"".equals(subject)) {
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        }
+
+        intent.putExtra(Intent.EXTRA_TEXT, content);
+
+        // 设置弹出框标题
+        if (dlgTitle != null && !"".equals(dlgTitle)) { // 自定义标题
+            startActivity(Intent.createChooser(intent, dlgTitle));
+        } else { // 系统默认标题
+            startActivity(intent);
+        }
     }
 }
 
