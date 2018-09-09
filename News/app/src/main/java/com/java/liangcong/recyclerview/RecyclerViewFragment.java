@@ -1,6 +1,7 @@
 package com.java.liangcong.recyclerview;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -10,9 +11,11 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.java.liangcong.adapter.NewsAdapter;
 import com.java.liangcong.web.TencentNewsXmlParser;
@@ -43,6 +46,8 @@ public class RecyclerViewFragment extends Fragment {
     private RecyclerView newsRecyclerView;
     private RecyclerView.Adapter newsAdapter;
     private RecyclerView.LayoutManager newsLayoutManager;
+
+    private static Context context = null;
 
     public SwipeRefreshLayout newsRecyclerViewContainer;
 
@@ -86,11 +91,12 @@ public class RecyclerViewFragment extends Fragment {
                     @Override
                     public void onRefresh() {
                         // 刷新动画开始后回调到此方法
-                        loadNews(type);
+                        updateNews(type);
                     }
                 }
         );
 
+        context = this.getContext();
 
         newsRecyclerView = newsRecyclerViewContainer.findViewById(R.id.recyclerView);
         newsRecyclerView.addItemDecoration(new DividerItemDecoration(newsRecyclerView.getContext(),DividerItemDecoration.VERTICAL));
@@ -119,18 +125,24 @@ public class RecyclerViewFragment extends Fragment {
 
     public static ArrayList<TencentNewsXmlParser.NewsItem> getNews(String type){
         ArrayList<TencentNewsXmlParser.NewsItem> news = new ArrayList<>();
+        boolean flag = false;
+
 
         NewsCursorWrapper cursor = queryNews(null,null);
         try{
             cursor.moveToFirst();
             while(!cursor.isAfterLast()){
+                flag = true;
                 TencentNewsXmlParser.NewsItem item = cursor.getNewsItem();
-                if ( item.type.equals("全部") || item.type.equals(type)) news.add(item);
+                if ( item.type.equals("全部") || item.type.equals(type)) {
+                    news.add(item);
+                }
                 cursor.moveToNext();
             }
         }finally {
             cursor.close();
         }
+
         return news;
     }
 
@@ -150,13 +162,29 @@ public class RecyclerViewFragment extends Fragment {
     public void loadNews(String type){
         final String loc_type = type;
 
-        final ArrayList<TencentNewsXmlParser.NewsItem> newsList = new GetNewsList(getUrl(loc_type)).getNews(loc_type);
+        final ArrayList<TencentNewsXmlParser.NewsItem> newsList = new GetNewsList(getUrl(loc_type)).getNews(loc_type, context);
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                int sleep_counter = 0;
+                boolean over_time = false;
+
                 while(newsList.size() <= 0){
                     SystemClock.sleep(100);
+                    sleep_counter+=100;
+                    if(getActivity()!=null && sleep_counter > 5000){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), loc_type +"加载超时，将仅展示过往新闻，请检查网络连接",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        newsRecyclerViewContainer.setRefreshing(false);
+                        over_time = true;
+                        break;
+                    }
                 }
                 for(TencentNewsXmlParser.NewsItem item: newsList){
                     ContentValues values = getContentValues(item);
@@ -165,17 +193,23 @@ public class RecyclerViewFragment extends Fragment {
                 }
 
                 //更新
+                final int old_size = displayNews.size();
                 displayNews.clear();
                 displayNews.addAll(0,getNews(loc_type));
 
-                while(displayNews.size() == 0){
+                while(over_time == false && displayNews.size() == 0){
                     SystemClock.sleep(100);
                 }
+                final int new_size = displayNews.size();
 
-                if(getActivity() != null) {
+                if(over_time == false && getActivity() != null) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            if(new_size-old_size > 0)
+                                Toast.makeText(getContext(), "更新了"+(new_size-old_size)+"条"+loc_type,
+                                        Toast.LENGTH_SHORT).show();
+
                             newsRecyclerViewContainer.setRefreshing(false);
                             //更新
                             newsAdapter.notifyDataSetChanged();
@@ -216,5 +250,68 @@ public class RecyclerViewFragment extends Fragment {
         String url = jsonObj.optString(type);
 
         return url;
+    }
+
+    public void updateNews(String type){
+        final String loc_type = type;
+
+        final ArrayList<TencentNewsXmlParser.NewsItem> newsList = new GetNewsList(getUrl(loc_type)).getNews(loc_type, context);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int sleep_counter = 0;
+                boolean over_time = false;
+
+                while(newsList.size() <= 0){
+                    SystemClock.sleep(100);
+                    sleep_counter+=100;
+                    if(getActivity()!=null && sleep_counter > 5000){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), loc_type +"加载超时，将仅展示过往新闻，请检查网络连接",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        newsRecyclerViewContainer.setRefreshing(false);
+                        over_time = true;
+                        break;
+                    }
+                }
+                for(TencentNewsXmlParser.NewsItem item: newsList){
+                    ContentValues values = getContentValues(item);
+                    MainActivity.database.insertWithOnConflict(NewsDbSchema.Newstable.NAME, null,
+                            values, SQLiteDatabase.CONFLICT_IGNORE);
+                }
+
+                //更新
+                final int old_size = displayNews.size();
+                displayNews.clear();
+                displayNews.addAll(0,getNews(loc_type));
+
+                while(over_time == false && displayNews.size() == 0){
+                    SystemClock.sleep(100);
+                }
+                final int new_size = displayNews.size();
+
+                if(over_time == false && getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(new_size-old_size > 0)
+                                Toast.makeText(getContext(), "更新了"+(new_size-old_size)+"条"+loc_type,
+                                        Toast.LENGTH_SHORT).show();
+                            else Toast.makeText(getContext(), loc_type +"暂无更新",
+                                    Toast.LENGTH_SHORT).show();
+                            newsRecyclerViewContainer.setRefreshing(false);
+                            //更新
+                            newsAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
+
+            }
+        }).start();
     }
 }

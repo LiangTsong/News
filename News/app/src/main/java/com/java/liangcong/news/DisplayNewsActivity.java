@@ -147,12 +147,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateNews(TencentNewsXmlParser.NewsItem item){
-        ContentValues values = MainActivity.getContentValues(item);
-        MainActivity.database.update(NewsDbSchema.Newstable.NAME, values, NewsDbSchema.Newstable.Cols.LINK +
-                " = ? ", new String[] {item.getLink()});
-    }
-
     public static TencentNewsXmlParser.NewsItem getItem(String link){
         TencentNewsXmlParser.NewsItem item = new TencentNewsXmlParser.NewsItem();
         NewsCursorWrapper cursor = queryNews(null,null);
