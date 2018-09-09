@@ -175,6 +175,14 @@ public class DisplayNewsActivity extends AppCompatActivity {
                 permissiongen();
                 return true;
             }
+            case R.id.textshare:{
+                //文字分享
+                TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
+                shareText("文字分享", itemToShare.link,
+                        "【" + itemToShare.type + "】" + Html.fromHtml(itemToShare.title).toString() +
+                                "【" + itemToShare.link + "】" + Html.fromHtml(itemToShare.description).toString() + "......");
+                return true;
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -330,7 +338,7 @@ public class DisplayNewsActivity extends AppCompatActivity {
         //在这个方法中做一些权限申请成功的事情
         File f = saveBitmapToFile(shotActivityNoBar(this));//储存
         TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
-        shareImg(Html.fromHtml(itemToShare.title).toString(), itemToShare.link,
+        shareImg("图片分享", itemToShare.link,
                 "【" + itemToShare.type + "】" + Html.fromHtml(itemToShare.title).toString() +
                         "【" + itemToShare.link + "】" + Html.fromHtml(itemToShare.description).toString() + "......",
                 getImageContentUri(this, f));
@@ -387,7 +395,7 @@ public class DisplayNewsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
-                        shareText(Html.fromHtml(itemToShare.title).toString(), itemToShare.link,
+                        shareText("文字分享", itemToShare.link,
                                 "【" + itemToShare.type + "】" + Html.fromHtml(itemToShare.title).toString() +
                                         "【" + itemToShare.link + "】" + Html.fromHtml(itemToShare.description).toString() + "......");
                     }

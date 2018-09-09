@@ -9,6 +9,11 @@
     <item
         android:id="@+id/share"
         android:icon="@drawable/ic_baseline_share_24px"
-        android:title="分享"
+        android:title="图片分享"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/textshare"
+        android:icon="@drawable/ic_baseline_launch_24px"
+        android:title="文字分享"
         app:showAsAction="ifRoom"/>
 </menu>
