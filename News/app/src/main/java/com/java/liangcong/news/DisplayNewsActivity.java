@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -184,8 +186,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.share:{
-                Toast.makeText(getApplicationContext(), "即将开始分享",
-                        Toast.LENGTH_SHORT).show();
                 //分享
                 //权限申请，成功后分享
                 permissiongen();
@@ -355,7 +355,7 @@ public class DisplayNewsActivity extends AppCompatActivity {
     //申请失败
     @PermissionFail(requestCode = SUCCESSCODE)
     public void doFailSomething() {
-        //
+        showNormalDialog();
     }
 
     public static Uri getImageContentUri(Context context, File imageFile) {
@@ -378,6 +378,59 @@ public class DisplayNewsActivity extends AppCompatActivity {
             } else {
                 return null;
             }
+        }
+    }
+
+    private void showNormalDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(this);
+        normalDialog.setIcon(R.drawable.ic_baseline_build_24px);
+        normalDialog.setTitle("需要读写文件权限");
+        normalDialog.setMessage("为了分享图片新闻，News需要获取当前新闻的截图。请到系统设置给予News文件读写权限，以使用图片分享功能。否则，您将只能分享无图片新闻。");
+        normalDialog.setPositiveButton("好的",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                    }
+                });
+        normalDialog.setNegativeButton("分享无图新闻",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
+                        shareText(Html.fromHtml(itemToShare.title).toString(), itemToShare.link,
+                                "【" + itemToShare.type + "】" + Html.fromHtml(itemToShare.title).toString() +
+                                        "【" + itemToShare.link + "】" + Html.fromHtml(itemToShare.description).toString() + "......");
+                    }
+                });
+
+        // 显示
+        normalDialog.show();
+    }
+
+    private void shareText(String dlgTitle, String subject, String content) {
+        if (content == null || "".equals(content)) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        if (subject != null && !"".equals(subject)) {
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        }
+
+        intent.putExtra(Intent.EXTRA_TEXT, content);
+
+        // 设置弹出框标题
+        if (dlgTitle != null && !"".equals(dlgTitle)) { // 自定义标题
+            startActivity(Intent.createChooser(intent, dlgTitle));
+        } else { // 系统默认标题
+            startActivity(intent);
         }
     }
 }

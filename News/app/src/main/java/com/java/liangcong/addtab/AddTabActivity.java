@@ -4,15 +4,19 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.java.liangcong.adapter.TabOrderAdapter;
 import com.java.liangcong.news.MainActivity;
+import com.java.liangcong.web.TencentNewsXmlParser;
 import com.liangcong.news.R;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -38,6 +42,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Map;
+
+import database.NewsDbSchema.NewsDbSchema;
 
 public class AddTabActivity extends AppCompatActivity {
 
@@ -78,6 +84,20 @@ public class AddTabActivity extends AppCompatActivity {
     }
 
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case android.R.id.home: {
+                //返回
+                Intent intent=new Intent();
+                setResult(20,intent);
+                finish();
+                return true;
+            }
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void getOldTabs()  {
         InputStream is = getResources().openRawResource(R.raw.urls);
@@ -182,30 +202,36 @@ public class AddTabActivity extends AppCompatActivity {
     public void addTabs(View view){
         String repeatedTags = "[";
         boolean flag = false;
-        //先全变成未选择
-        listView.setSelected(false);
-        for(int i = 0; i < allTabs.size(); i++){
-            if(checkedItemPositions.get(i)==true){
-                //添加
-                if(!oldTabs.contains(allTabs.get(i))){
-                    oldTabs.add(allTabs.get(i));
-                }else{
-                    //重复
-                    flag = true;
-                    repeatedTags+= (" " +allTabs.get(i));
+
+        if(checkedItemPositions!=null) {
+            //先全变成未选择
+            listView.setSelected(false);
+            for (int i = 0; i < allTabs.size(); i++) {
+                if (checkedItemPositions.get(i) == true) {
+                    //添加
+                    if (!oldTabs.contains(allTabs.get(i))) {
+                        oldTabs.add(allTabs.get(i));
+                    } else {
+                        //重复
+                        flag = true;
+                        repeatedTags += (" " + allTabs.get(i));
+                    }
                 }
             }
-        }
-        repeatedTags+="]";
-        if(flag) Toast.makeText(getApplicationContext(), "不能重复添加标签:" + repeatedTags,
-                Toast.LENGTH_SHORT).show();
+            repeatedTags += "]";
+            if (flag) Toast.makeText(getApplicationContext(), "不能重复添加标签:" + repeatedTags,
+                    Toast.LENGTH_SHORT).show();
 
-        //储存
-        saveToPhone(MainActivity.TABS_FILE_NAME,TabsToJsonString(oldTabs));
-        //返回
-        Intent intent=new Intent();
-        setResult(20,intent);
-        finish();
+            //储存
+            saveToPhone(MainActivity.TABS_FILE_NAME, TabsToJsonString(oldTabs));
+            //返回
+            Intent intent = new Intent();
+            setResult(20, intent);
+            finish();
+        }else{
+            Toast.makeText(getApplicationContext(), "未勾选任何标签",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

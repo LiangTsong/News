@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.java.liangcong.adapter.TabOrderAdapter;
 import com.java.liangcong.addtab.AddTabActivity;
@@ -50,11 +51,11 @@ public class TabOrderActivity extends AppCompatActivity {
 
         ActionBar ab = getSupportActionBar();
         ab.setTitle("标签管理");
+        ab.setDisplayHomeAsUpEnabled(true);
 
         listView = (ListView)findViewById(R.id.listView);
 
         Tabs = jsonStringToTabs(readFromPhone(MainActivity.TABS_FILE_NAME));
-        //Log.d("NEWS", "onCreate: 获取的第一个Tag是"+ Tabs.get(0));
         oldTabs = Tabs;
 
         context = this;
@@ -188,20 +189,25 @@ public class TabOrderActivity extends AppCompatActivity {
 
     public void deleteTabs(View view){
         //先全变成未选择
-        listView.setSelected(false);
 
-        for(int i = 0; i < Tabs.size(); i++){
-            if(checkedItemPositions.get(i)==true){
-                //删除
-                Tabs.remove(oldTabs.get(i));
+        if(checkedItemPositions!=null) {
+            for (int i = 0; i < Tabs.size(); i++) {
+                if (checkedItemPositions.get(i) == true) {
+                    //删除
+                    Tabs.remove(oldTabs.get(i));
+                }
+            }
+                //写入
+                listView.setSelected(false);
+                saveToPhone(MainActivity.TABS_FILE_NAME, TabsToJsonString(Tabs));
+                //显示最新
+                tabAdapter.notifyDataSetChanged();
+                Intent intent = new Intent();
+                setResult(10, intent);
+                finish();
+            } else {
+                Toast.makeText(getApplicationContext(), "未勾选任何标签",
+                        Toast.LENGTH_SHORT).show();
             }
         }
-        //写入
-        saveToPhone(MainActivity.TABS_FILE_NAME,TabsToJsonString(Tabs));
-        //显示最新
-        tabAdapter.notifyDataSetChanged();
-        Intent intent=new Intent();
-        setResult(10,intent);
-        finish();
-    }
 }
