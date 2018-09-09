@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -65,9 +64,7 @@ public class CollectionActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("NEWS", "onActivityResult: 已经返回");
         if (requestCode==30){
-            Log.d("NEWS", "onActivityResult: if执行");
             //获取收藏的新闻
             collectedNews.clear();
             getCollectedItem();

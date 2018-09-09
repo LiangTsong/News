@@ -1,9 +1,5 @@
 package com.java.liangcong.web;
 
-
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -12,8 +8,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class TencentNewsXmlParser {
     // We don't use namespaces
@@ -136,7 +130,6 @@ public class TencentNewsXmlParser {
     private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
-        Log.i("debug001","title:"+title);
         parser.require(XmlPullParser.END_TAG, ns, "title");
         return title;
     }
@@ -145,7 +138,6 @@ public class TencentNewsXmlParser {
     private String readLink(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "link");
         String link = readText(parser);
-        Log.i("debug001","link:"+link);
         parser.require(XmlPullParser.END_TAG, ns, "link");
         return link;
     }
@@ -153,7 +145,6 @@ public class TencentNewsXmlParser {
     private String readDate(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "pubDate");
         String link = readText(parser);
-        Log.i("debug001","pubDate:"+link);
         parser.require(XmlPullParser.END_TAG, ns, "pubDate");
         return link;
     }
@@ -162,7 +153,6 @@ public class TencentNewsXmlParser {
     private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, "description");
         String description = readText(parser);
-        Log.i("debug001","description:"+description);
         parser.require(XmlPullParser.END_TAG, ns, "description");
         if (description.length() > 2 && (description.charAt(0) == 12288 || description.charAt(0) == ' ')) description = description.substring(2);
         return description;

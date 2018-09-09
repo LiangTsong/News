@@ -1,5 +1,6 @@
 package com.java.liangcong.search;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,13 +13,13 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.java.liangcong.adapter.CollectedNewsAdapter;
+import com.java.liangcong.news.DisplayNewsActivity;
 import com.java.liangcong.news.MainActivity;
 import com.java.liangcong.news.NewsCursorWrapper;
 import com.java.liangcong.web.TencentNewsXmlParser;
@@ -28,7 +29,8 @@ import java.util.ArrayList;
 
 import database.NewsDbSchema.NewsDbSchema;
 
-import static com.java.liangcong.collection.CollectionActivity.collectedNews;
+import static com.java.liangcong.news.MainActivity.getContentValues;
+
 
 public class SearchActivity extends AppCompatActivity {
     private EditText editText;
@@ -77,6 +79,25 @@ public class SearchActivity extends AppCompatActivity {
                     newsAdapter.notifyDataSetChanged();
                 }
                 return false;
+            }
+        });
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //TencentNewsXmlParser.NewsItem item = (TencentNewsXmlParser.NewsItem)listView.getItemAtPosition(i);
+                TencentNewsXmlParser.NewsItem item = searchedNews.get(i);
+                //item i已读过
+                String url = item.link;
+
+                item.setTitle("<font color=\"#c2c2c2\">" +item.getTitle());
+                item.setDescription("<font color=\"#c2c2c2\">" +item.getDescription());
+                updateNews(item);
+                newsAdapter.notifyDataSetChanged();
+
+                Intent intent = new Intent(context, DisplayNewsActivity.class);
+                intent.putExtra("NEWS_URL",url);
+                startActivityForResult(intent, 30);
             }
         });
     }
@@ -159,6 +180,12 @@ public class SearchActivity extends AppCompatActivity {
         normalDialog.show();
     }
 
+    public void updateNews(TencentNewsXmlParser.NewsItem item){
+        String url = item.getLink();
+        ContentValues values = getContentValues(item);
+        MainActivity.database.update(NewsDbSchema.Newstable.NAME, values, NewsDbSchema.Newstable.Cols.LINK +
+                " = ? ", new String[] {item.getLink()});
+    }
 
 }
 

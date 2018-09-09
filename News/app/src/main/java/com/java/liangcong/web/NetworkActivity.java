@@ -1,6 +1,5 @@
 package com.java.liangcong.web;
 
-import android.util.Log;
 
 public class NetworkActivity {
 
@@ -14,7 +13,6 @@ public class NetworkActivity {
 
     // Uses AsyncTask to download the XML feed
     public void loadPage(AsyncResponse asyncResponse) {
-        Log.i("debug001","开始loadPage");
 
         DownloadXmlTask downloadXmlTask = new DownloadXmlTask();
         downloadXmlTask.setOnAsyncResponse(asyncResponse);

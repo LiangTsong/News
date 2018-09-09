@@ -7,16 +7,28 @@
         android:id="@+id/search_btn"
         android:icon="@drawable/ic_baseline_search_24px"
         android:title="搜索新闻"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/action_collection"
         android:icon="@drawable/ic_baseline_library_books_24px"
         android:title="我的收藏"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/action_tab"
         android:icon="@drawable/ic_baseline_reorder_24px"
         android:title="标签管理"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/help"
+        android:icon="@drawable/ic_baseline_mood_24px"
+        android:title="帮助"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/about"
+        android:icon="@drawable/ic_baseline_copyright_24px"
+        android:title="关于"
         app:showAsAction="never"/>
 
 

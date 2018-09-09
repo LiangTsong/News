@@ -4,17 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.java.liangcong.adapter.TabOrderAdapter;
 import com.java.liangcong.news.MainActivity;
-import com.java.liangcong.web.TencentNewsXmlParser;
 import com.liangcong.news.R;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +39,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Map;
 
-import database.NewsDbSchema.NewsDbSchema;
 
 public class AddTabActivity extends AppCompatActivity {
 
@@ -78,7 +73,6 @@ public class AddTabActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 checkedItemPositions = listView.getCheckedItemPositions();
-                Log.d("ORDER", "onItemClick: "+position+checkedItemPositions.get(position));
             }
         });
     }

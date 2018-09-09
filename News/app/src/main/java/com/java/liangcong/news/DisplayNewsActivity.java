@@ -6,27 +6,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,17 +27,11 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.java.liangcong.web.TencentNewsXmlParser;
 import com.liangcong.news.R;
 
-import org.apache.http.util.TextUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -110,7 +96,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
                  + APP_CACHE_DIRNAME;
         //String cacheDirPath = getCacheDir()
         //        + APP_CACHE_DIRNAME;
-        Log.i("CACHE", "cachePath=" + cacheDirPath);
         // 设置数据库缓存路径
         webView.getSettings().setDatabasePath(cacheDirPath);
         webView.getSettings().setAppCachePath(cacheDirPath);
@@ -134,7 +119,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         readMenu = menu;
         if(getCollectedItem(url)!=null){//已收藏
-            Log.d("NEWS", "onPrepareOptionsMenu: 已收藏");
             readMenu.findItem(R.id.add_news).setIcon(R.drawable.ic_baseline_star_24px);
         }else {
             readMenu.findItem(R.id.add_news).setIcon(R.drawable.ic_baseline_star_border_24px);
@@ -293,7 +277,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
             fOut.flush();
             fOut.close();
         } catch (FileNotFoundException e) {
-            Log.i("ScreenShotUtil", "保存失败");
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();

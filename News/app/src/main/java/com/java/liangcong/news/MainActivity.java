@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,9 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.java.liangcong.adapter.TabAdapter;
 import com.java.liangcong.recyclerview.RecyclerViewFragment;
@@ -75,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("News");
+
         //数据库
         context = getApplicationContext();
         database = new NewsBaseHelper(context).getWritableDatabase();
@@ -117,11 +118,22 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, TabOrderActivity.class);
                 Log.d("ORDER", "onOptionsItemSelected: 即将进入标签控制");
                 startActivityForResult(intent,10);
+                return true;
             }
             case R.id.search_btn:{
                 //进入搜索页面
                 Intent intent = new Intent(context, SearchActivity.class);
                 startActivity(intent);
+                return true;
+            }
+            case R.id.help:{
+                //帮助
+                showHelpDialog();
+                return true;
+            }
+            case R.id.about:{
+                //关于
+                showAboutDialog();
                 return true;
             }
 
@@ -132,9 +144,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("NEWS", "onActivityResult: 已经返回");
         if (requestCode==10){
-            Log.d("NEWS", "onActivityResult: if执行");
             update();
         }
     }
@@ -155,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d("NEWS", "TabsToJsonString: 转为字符串："+stringer.toString());
         return stringer.toString();
     }
 
@@ -171,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
 
             saveToPhone(TABS_FILE_NAME,TabsToJsonString(default_Tabs));
 
-            Log.d("NEWS", "jsonStringToTabs: 已经存到手机");
 
             return default_Tabs;
         }
@@ -252,5 +260,53 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }).show();
         // super.onBackPressed();
+    }
+
+    private void showHelpDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        normalDialog.setIcon(R.drawable.ic_baseline_mood_24px);
+        normalDialog.setTitle("帮助");
+        normalDialog.setMessage("1. 首页右上方依次为搜索、收藏库、分类按钮。\n" +
+                "2. 点击新闻条目以阅读。\n3. 新闻阅读界面，右上方为收藏、分享按钮。\n4. 阅读过的新闻会变成灰色，同时内容会缓存，以供后续阅读。\n" +
+                "5. 主页状态，下拉可更新新闻列表。");
+        normalDialog.setPositiveButton("好",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                    }
+                });
+
+        // 显示
+        normalDialog.show();
+    }
+
+    private void showAboutDialog(){
+        /* @setIcon 设置对话框图标
+         * @setTitle 设置对话框标题
+         * @setMessage 设置对话框消息提示
+         * setXXX方法返回Dialog对象，因此可以链式设置属性
+         */
+        final AlertDialog.Builder normalDialog =
+                new AlertDialog.Builder(MainActivity.this);
+        normalDialog.setIcon(R.drawable.ic_baseline_copyright_24px);
+        normalDialog.setTitle("关于");
+        normalDialog.setMessage("梁聪\nTHU 计64\n2016013314\n2018夏季学期Java大作业");
+        normalDialog.setPositiveButton("好",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //...To-do
+                    }
+                });
+
+        // 显示
+        normalDialog.show();
     }
 }
