@@ -274,7 +274,7 @@ public class DisplayNewsActivity extends AppCompatActivity {
         TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
         Log.d("NEWS", "onOptionsItemSelected: 即将分享");
         //shareImg(itemToShare.title, itemToShare.link, itemToShare.description, getImageContentUri(this, f));
-        shareText(Html.fromHtml(itemToShare.title).toString(), itemToShare.link, Html.fromHtml("【"+itemToShare.type+"】"+itemToShare.title +" 【 "+ itemToShare.link + "】 " +itemToShare.description).toString() + "……");
+        shareText(Html.fromHtml(itemToShare.title).toString(), itemToShare.link, Html.fromHtml("【"+itemToShare.type+"】"+itemToShare.title +" 【 "+ itemToShare.link + "】 " +itemToShare.description).toString() + "......");
 
     }
     //申请失败
