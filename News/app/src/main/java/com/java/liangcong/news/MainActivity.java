@@ -14,9 +14,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.java.liangcong.adapter.TabAdapter;
 import com.java.liangcong.recyclerview.RecyclerViewFragment;
+import com.java.liangcong.search.SearchActivity;
 import com.java.liangcong.taborder.TabOrderActivity;
 import com.java.liangcong.web.TencentNewsXmlParser;
 import com.java.liangcong.collection.CollectionActivity;
@@ -88,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override
@@ -114,6 +117,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, TabOrderActivity.class);
                 Log.d("ORDER", "onOptionsItemSelected: 即将进入标签控制");
                 startActivityForResult(intent,10);
+            }
+            case R.id.search_btn:{
+                //进入搜索页面
+                Intent intent = new Intent(context, SearchActivity.class);
+                startActivity(intent);
+                return true;
             }
 
         }

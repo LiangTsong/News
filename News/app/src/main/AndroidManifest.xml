@@ -29,11 +29,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.java.liangcong.news.MainActivity" />
         </activity>
-
-        <activity android:name="com.java.liangcong.taborder.TabOrderActivity"/>
-        <activity android:name="com.java.liangcong.addtab.AddTabActivity"/>
-        <activity android:name="com.java.liangcong.collection.CollectionActivity"/>
-
+        <activity android:name="com.java.liangcong.taborder.TabOrderActivity" />
+        <activity android:name="com.java.liangcong.addtab.AddTabActivity" />
+        <activity android:name="com.java.liangcong.collection.CollectionActivity" />
+        <activity android:name="com.java.liangcong.search.SearchActivity"></activity>
     </application>
 
 </manifest>

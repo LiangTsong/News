@@ -2,6 +2,9 @@
   "国内新闻":"http://news.qq.com/newsgn/rss_newsgn.xml",
   "国际新闻":"http://news.qq.com/newsgj/rss_newswj.xml",
   "社会新闻":"http://news.qq.com/newssh/rss_newssh.xml",
+  "新浪国内":"http://rss.sina.com.cn/news/china/focus15.xml",
+  "新浪国际":"http://rss.sina.com.cn/news/world/focus15.xml",
+  "新浪社会":"http://rss.sina.com.cn/news/society/focus15.xml",
   "图片新闻":"http://news.qq.com/photon/rss_photo.xml",
   "军事新闻":"http://news.qq.com/milite/rss_milit.xml",
   "电影娱乐":"http://ent.qq.com/movie/rss_movie.xml",
@@ -60,6 +63,4 @@
   "重庆新闻":"http://cq.qq.com/CQxinwen/09cqnews/rss_newb.xml",
   "湖北新闻":"http://hb.qq.com/news/newsrss.xml",
   "广东新闻":"http://gd.qq.com/news/newsrss.xml"
-
-
 }
