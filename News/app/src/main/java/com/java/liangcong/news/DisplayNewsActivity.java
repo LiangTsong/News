@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -15,6 +16,8 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -56,13 +59,20 @@ public class DisplayNewsActivity extends AppCompatActivity {
     private String url;
     private WebView webView;
     private String newsTitle;
+    final private int SUCCESSCODE = 1;
     Menu readMenu;
-    public final int SUCCESSCODE = 666;
+
+    File dir;
+
+    private static final int REQUEST_PERMISSION = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_news);
+
+        File sdCard = Environment.getExternalStorageDirectory();
+        dir = new File (sdCard.getAbsolutePath() + "/news_photo");
 
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
@@ -179,7 +189,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
                 //分享
                 //权限申请，成功后分享
                 permissiongen();
-
                 return true;
             }
         }
@@ -245,43 +254,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
         return new NewsCursorWrapper(cursor);
     }
 
-    private void permissiongen() {
-        //处理需要动态申请的权限
-        PermissionGen.with(this)
-                .addRequestCode(SUCCESSCODE)
-                .permissions(
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
-
-                )
-                .request();
-    }
-
-    //申请权限结果的返回
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        PermissionGen.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-    }
-
-    //权限申请成功
-    @PermissionSuccess(requestCode = SUCCESSCODE)
-    public void doSomething() {
-        //分享
-        //分享
-        File f = saveBitmapToFile("NEWS_SHARE",shotActivityNoBar(this));//储存
-        Log.d("NEWS", "onOptionsItemSelected: 已经储存图片");
-        AlbumScan("NEWS_SHARE");
-        TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
-        Log.d("NEWS", "onOptionsItemSelected: 即将分享");
-        //shareImg(itemToShare.title, itemToShare.link, itemToShare.description, getImageContentUri(this, f));
-        shareText(Html.fromHtml(itemToShare.title).toString(), itemToShare.link, Html.fromHtml("【"+itemToShare.type+"】"+itemToShare.title +" 【 "+ itemToShare.link + "】 " +itemToShare.description).toString() + "......");
-
-    }
-    //申请失败
-    @PermissionFail(requestCode = SUCCESSCODE)
-    public void doFailSomething() {
-    }
-
     public Bitmap shotActivityNoBar(Activity activity) {
         // 获取windows中最顶层的view
         View view = activity.getWindow().getDecorView();
@@ -310,10 +282,10 @@ public class DisplayNewsActivity extends AppCompatActivity {
         return bmp;
     }
 
-    public File saveBitmapToFile(String fileName, Bitmap bitmap) {
+    public File saveBitmapToFile(Bitmap bitmap) {
 
-        if (TextUtils.isEmpty(fileName) || bitmap == null) return null;
-        File f = new File(fileName);
+        dir.mkdir();
+        File f = new File(dir, "NEWS_SHARE.jpeg");
         try {
             f.createNewFile();
             FileOutputStream fOut = new FileOutputStream(f);
@@ -327,10 +299,6 @@ public class DisplayNewsActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return f;
-    }
-
-    public void AlbumScan(String fileName) {
-        MediaScannerConnection.scanFile(webView.getContext(), new String[]{fileName}, new String[]{"image/jpeg"}, null);
     }
 
     private void shareImg(String dlgTitle, String subject, String content,
@@ -356,44 +324,60 @@ public class DisplayNewsActivity extends AppCompatActivity {
         }
     }
 
+    private void permissiongen() {
+        //处理需要动态申请的权限
+        PermissionGen.with(this)
+                .addRequestCode(SUCCESSCODE)
+                .permissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                .request();
+    }
 
-    public static Uri getImageContentUri(Context context, java.io.File imageFile) {
+    //申请权限结果的返回
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        PermissionGen.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
+    //权限申请成功
+    @PermissionSuccess(requestCode = SUCCESSCODE)
+    public void doSomething() {
+        //在这个方法中做一些权限申请成功的事情
+        File f = saveBitmapToFile(shotActivityNoBar(this));//储存
+        TencentNewsXmlParser.NewsItem itemToShare = getItem(url);
+        shareImg(Html.fromHtml(itemToShare.title).toString(), itemToShare.link,
+                "【" + itemToShare.type + "】" + Html.fromHtml(itemToShare.title).toString() +
+                        "【" + itemToShare.link + "】" + Html.fromHtml(itemToShare.description).toString() + "......",
+                getImageContentUri(this, f));
+    }
+    //申请失败
+    @PermissionFail(requestCode = SUCCESSCODE)
+    public void doFailSomething() {
+        //
+    }
+
+    public static Uri getImageContentUri(Context context, File imageFile) {
         String filePath = imageFile.getAbsolutePath();
-        Cursor cursor = context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{MediaStore.Images.Media._ID}, MediaStore.Images.Media.DATA + "=? ",
-                new String[]{filePath}, null);
+        Cursor cursor = context.getContentResolver().query(
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                new String[] { MediaStore.Images.Media._ID },
+                MediaStore.Images.Media.DATA + "=? ",
+                new String[] { filePath }, null);
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
-            Uri baseUri = Uri.parse("content://media/external/images/media");
-            return Uri.withAppendedPath(baseUri, "" + id);
+            cursor.close();
+            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "" + id);
         } else {
             if (imageFile.exists()) {
                 ContentValues values = new ContentValues();
                 values.put(MediaStore.Images.Media.DATA, filePath);
-                return context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                return context.getContentResolver().insert(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
             } else {
                 return null;
             }
-        }
-    }
-
-    private void shareText(String dlgTitle, String subject, String content) {
-        if (content == null || "".equals(content)) {
-            return;
-        }
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        if (subject != null && !"".equals(subject)) {
-            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        }
-
-        intent.putExtra(Intent.EXTRA_TEXT, content);
-
-        // 设置弹出框标题
-        if (dlgTitle != null && !"".equals(dlgTitle)) { // 自定义标题
-            startActivity(Intent.createChooser(intent, dlgTitle));
-        } else { // 系统默认标题
-            startActivity(intent);
         }
     }
 }
