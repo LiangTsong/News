@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.search_btn:{
                 //进入搜索页面
                 Intent intent = new Intent(context, SearchActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 50);
                 return true;
             }
             case R.id.help:{
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==10){
+        if (requestCode==10 || requestCode==50){
             update();
         }
     }

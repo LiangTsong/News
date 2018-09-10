@@ -115,6 +115,8 @@ public class SearchActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case android.R.id.home: {
+                Intent intent = new Intent();
+                setResult(50, intent);
                 finish();
                 return true;
             }
