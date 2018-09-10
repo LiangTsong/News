@@ -36,7 +36,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 
-import database.NewsDbSchema.NewsDbSchema;
+import com.java.liangcong.database.NewsDbSchema.NewsDbSchema;
 
 import static com.java.liangcong.news.MainActivity.getContentValues;
 
@@ -204,10 +204,6 @@ public class RecyclerViewFragment extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(new_size-old_size > 0)
-                                Toast.makeText(getContext(), "更新了"+(new_size-old_size)+"条"+loc_type,
-                                        Toast.LENGTH_SHORT).show();
-
                             newsRecyclerViewContainer.setRefreshing(false);
                             //更新
                             newsAdapter.notifyDataSetChanged();

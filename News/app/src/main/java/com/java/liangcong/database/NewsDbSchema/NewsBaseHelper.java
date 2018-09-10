@@ -1,4 +1,4 @@
-package database.NewsDbSchema;
+package com.java.liangcong.database.NewsDbSchema;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

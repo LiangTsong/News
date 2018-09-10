@@ -39,8 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import database.NewsDbSchema.NewsBaseHelper;
-import database.NewsDbSchema.NewsDbSchema;
+import com.java.liangcong.database.NewsDbSchema.NewsBaseHelper;
+import com.java.liangcong.database.NewsDbSchema.NewsDbSchema;
 
 public class MainActivity extends AppCompatActivity {
 

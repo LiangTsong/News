@@ -5,7 +5,7 @@ import android.database.CursorWrapper;
 
 import com.java.liangcong.web.TencentNewsXmlParser;
 
-import database.NewsDbSchema.NewsDbSchema;
+import com.java.liangcong.database.NewsDbSchema.NewsDbSchema;
 
 public class NewsCursorWrapper extends CursorWrapper {
     public NewsCursorWrapper(Cursor cursor){

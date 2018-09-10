@@ -1,4 +1,4 @@
-package database.NewsDbSchema;
+package com.java.liangcong.database.NewsDbSchema;
 
 public class NewsDbSchema {
     public static final class Newstable{

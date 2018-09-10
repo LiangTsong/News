@@ -37,7 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import database.NewsDbSchema.NewsDbSchema;
+import com.java.liangcong.database.NewsDbSchema.NewsDbSchema;
 import kr.co.namee.permissiongen.PermissionFail;
 import kr.co.namee.permissiongen.PermissionGen;
 import kr.co.namee.permissiongen.PermissionSuccess;

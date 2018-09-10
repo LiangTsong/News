@@ -29,7 +29,7 @@ import com.liangcong.news.R;
 
 import java.util.ArrayList;
 
-import database.NewsDbSchema.NewsDbSchema;
+import com.java.liangcong.database.NewsDbSchema.NewsDbSchema;
 
 import static com.java.liangcong.news.MainActivity.getContentValues;
 
